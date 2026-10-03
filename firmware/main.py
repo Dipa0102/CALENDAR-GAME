@@ -1,0 +1,3 @@
+import kartcal
+
+kartcal.main()
