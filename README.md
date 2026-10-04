@@ -4,7 +4,7 @@
 
 Une mini-télé rétro à écran tactile. Toute l'année, c'est un agenda avec la météo de la semaine. Du 1<sup>er</sup> au 25 décembre, c'est un calendrier de l'Avent : chaque jour, une fenêtre cadeau s'ouvre sur un jeu d'arcade façon années 80.
 
-Le programme est écrit en MicroPython pour la carte **E32R28T**, une carte ESP32 avec écran tactile 2,8" de la famille « Cheap Yellow Display ». Après téléchargement du dépôt, ouvrir [`index.html`](index.html) dans le navigateur. Le bouton **Le montage** ouvre [`montage.html`](montage.html) : vidéo de branchement et vidéo d'installation du programme. Les fichiers sont dans `video/`.
+Le programme est écrit en MicroPython pour la carte **E32R28T**, une carte ESP32 avec écran tactile 2,8" de la famille « Cheap Yellow Display ». Après téléchargement du dépôt, ouvrir [`index.html`](index.html) dans le navigateur. Le bouton **Le montage** ouvre [`montage.html`](montage.html) : vidéo de branchement et vidéo d'installation du programme. Les fichiers sont dans `video/`. La jaquette à imprimer est dans [`visuels/jaquette.webp`](visuels/jaquette.webp) (vue à plat) et [`visuels/jaquette-decoupe.png`](visuels/jaquette-decoupe.png) (fichier avec traits de découpe). Le boîtier 3D est dans [`stl/`](stl/).
 
 | Calendrier | Météo | Écran de veille |
 |:---:|:---:|:---:|
