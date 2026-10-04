@@ -1,0 +1,811 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Raccordement Calendar Game</title>
+<meta name="description" content="Notice de raccordement de Calendar Game : la carte E32R28T, le haut-parleur, la batterie LiPo 1S et l'ordinateur. Ce qu'il faut brancher, dans quel ordre, sans aucune soudure.">
+<meta name="theme-color" content="#122028">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Montserrat:ital,wght@0,800;0,900;1,900&family=Permanent+Marker&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --paper:#EEDBC4; --paper2:#E5CCAE; --cream:#F6EBDC; --sheet:#F3E6D3;
+  --red:#DB352B; --red-d:#A9241D; --petrol:#0E526C; --petrol-l:#2C8FA8;
+  --slate:#122028; --ink:#0A0B0C; --mustard:#F2B705; --grey:#5F6468; --rule:#CDB89B;
+  --display:"Montserrat", "Arial Black", Impact, sans-serif;
+  --body:"Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+  --led:"VT323", ui-monospace, Consolas, monospace;
+  --marker:"Permanent Marker", "Comic Sans MS", cursive;
+  --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35 0 0 0 0 .22 0 0 0 0 .1 0 0 0 .13 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+*{box-sizing:border-box}
+img{max-width:100%;display:block}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{margin:0;background:var(--paper) var(--grain);color:var(--ink);font-family:var(--body);font-size:1.2rem;line-height:1.45}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--mustard);outline-offset:3px}
+.wrap{max-width:1200px;margin-inline:auto;padding-inline:20px}
+h1,h2,h3{text-wrap:balance;margin:0}
+p{margin:0}
+.tag{font-family:var(--mono);font-weight:700;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase}
+section[id],.sheet{scroll-margin-top:80px}
+
+/* navigation */
+.top-nav{position:sticky;top:0;z-index:90;background:var(--ink);color:var(--cream);border-bottom:3px solid var(--red);box-shadow:0 6px 14px rgba(0,0,0,.3)}
+.top-nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:62px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex:none}
+.nav-logo img{height:48px;width:auto;filter:drop-shadow(0 3px 0 rgba(0,0,0,.5));transition:transform .2s}
+.nav-logo:hover img{transform:rotate(-3deg) scale(1.06)}
+.nav-logo b{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;background:var(--red);color:var(--cream);padding:3px 7px}
+.nav-links{display:flex;gap:22px}
+.nav-links a{position:relative;font-family:var(--display);font-weight:800;font-size:.8rem;text-transform:uppercase;text-decoration:none;letter-spacing:.03em}
+.nav-links a::after{content:"";position:absolute;left:0;right:100%;bottom:-6px;height:3px;background:var(--mustard);transition:right .2s}
+.nav-links a:hover::after{right:0}
+.btn{display:inline-flex;align-items:center;gap:.5em;text-decoration:none;font-family:var(--display);font-weight:900;text-transform:uppercase;letter-spacing:.04em;
+  font-size:1rem;padding:13px 22px;border:3px solid var(--ink);cursor:pointer;transition:transform .12s,box-shadow .12s}
+.btn.primary{background:var(--red);color:var(--cream);box-shadow:5px 5px 0 var(--ink)}
+.btn.ghost{background:var(--cream);color:var(--ink);box-shadow:5px 5px 0 var(--ink)}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--ink)}
+.btn:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink)}
+.nav-cta{font-size:.8rem;padding:8px 14px;border-width:2px;box-shadow:4px 4px 0 var(--mustard)}
+.nav-cta:hover{box-shadow:6px 6px 0 var(--mustard)}
+
+/* en-tête */
+.head{padding-block:56px 40px;border-bottom:2px solid var(--ink)}
+.crumbs{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:#6b5b4a;display:flex;flex-wrap:wrap;gap:8px}
+.crumbs a{text-decoration:none} .crumbs a:hover{color:var(--red)}
+.crumbs span::before{content:"/";margin-right:8px;color:var(--rule)}
+.head h1{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(2.3rem,6vw,4.6rem);line-height:.92;letter-spacing:-.03em;margin-top:18px}
+.head h1 em{font-style:normal;color:var(--red)}
+.lede{max-width:40em;margin-top:16px;font-size:1.32rem;color:#2f2822}
+.lede b{background:var(--mustard);padding:0 .2em}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:34px}
+.stat{background:var(--slate);color:var(--cream);border:3px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:16px 18px;position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:var(--c,var(--red))}
+.stat b{display:block;font-family:var(--display);font-weight:900;font-size:clamp(2.4rem,5vw,3.6rem);line-height:1;color:var(--c,var(--red))}
+.stat span{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase}
+
+/* sections */
+.sec{padding-block:64px}
+.sec-head{display:grid;gap:10px;margin-bottom:28px;max-width:760px}
+.sec-head .tag{color:var(--red)}
+.sec-head .tag::before{content:"";display:inline-block;width:34px;height:3px;background:currentColor;vertical-align:.3em;margin-right:10px}
+.sec-head h2{font-family:var(--display);font-weight:900;font-size:clamp(1.8rem,4vw,2.8rem);line-height:.95;text-transform:uppercase;letter-spacing:-.02em}
+.sec-head p{color:#3b322a}
+
+/* schéma façon fiche composant */
+.sheet{background:var(--sheet);border:1.5px solid var(--ink);box-shadow:10px 10px 0 var(--ink);position:relative}
+.sheet-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 16px;border-bottom:1.5px solid var(--ink);font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:#5d5246}
+.sheet-top b{color:var(--ink)}
+.sheet-scroll{overflow-x:auto}
+.diagram{display:block;width:100%;min-width:760px;height:auto}
+.diagram text{font-family:var(--mono)}
+.diagram .part{transition:opacity .35s}
+.diagram[data-hl] .part{opacity:.22}
+.diagram[data-hl~="pc"] .p-pc,.diagram[data-hl~="usb"] .p-usb,.diagram[data-hl~="board"] .p-board,
+.diagram[data-hl~="spk"] .p-spk,.diagram[data-hl~="bat"] .p-bat,.diagram[data-hl~="all"] .part{opacity:1}
+.flow{stroke-dasharray:5 7;animation:flow .9s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-24}}
+.legend{display:flex;flex-wrap:wrap;gap:18px;padding:12px 16px;border-top:1.5px solid var(--ink);font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
+.legend i{display:inline-block;width:12px;height:12px;margin-right:7px;vertical-align:-1px;border:1.5px solid var(--ink)}
+.src{font-family:var(--mono);font-size:.72rem;color:#6b5b4a;margin-top:14px;letter-spacing:.04em}
+
+/* appareils */
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:30px}
+.box{border:3px solid var(--ink);box-shadow:8px 8px 0 var(--ink);background:var(--cream);overflow:hidden}
+.box h3{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:1.2rem;padding:14px 20px;background:var(--red);color:var(--cream);border-bottom:3px solid var(--ink)}
+.box.dark{background:var(--slate);color:var(--cream)}
+.box.dark h3{background:var(--petrol)}
+.box h3 small{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;font-weight:700;margin-left:8px;opacity:.85}
+.items{list-style:none;margin:0;padding:8px 20px 14px}
+.items li{padding:11px 0;border-bottom:1.5px dashed rgba(10,11,12,.22)}
+.box.dark .items li{border-color:rgba(246,235,220,.18)}
+.items li:last-child{border-bottom:0}
+.items b{font-family:var(--display);font-weight:900;font-size:.98rem;text-transform:uppercase;letter-spacing:.01em}
+.items .ref{display:block;font-family:var(--mono);font-size:.72rem;color:var(--petrol);margin-top:3px}
+.box.dark .items .ref{color:#9CC3D3}
+
+.warn{margin-top:34px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;background:var(--mustard);border:3px solid var(--ink);box-shadow:8px 8px 0 var(--ink);padding:18px 22px;position:relative;overflow:hidden}
+.warn::before{content:"";position:absolute;left:0;right:0;top:0;height:10px;background:repeating-linear-gradient(-45deg,var(--ink) 0 12px,var(--mustard) 12px 24px)}
+.warn .ico{width:62px;height:62px;display:grid;place-items:center;background:var(--ink);color:var(--mustard);font-family:var(--display);font-weight:900;font-size:2.2rem;clip-path:polygon(50% 0,100% 100%,0 100%);padding-top:14px;margin-top:8px}
+.warn h3{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:1.3rem;margin-top:6px}
+.warn p{margin-top:4px}
+
+/* étapes */
+.stepper{margin-top:34px;background:var(--slate);color:var(--cream);border:3px solid var(--ink);box-shadow:10px 10px 0 var(--red);padding:24px 26px;display:grid;gap:16px}
+.stepper-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.stepper .tag{color:var(--mustard)}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dots button{width:30px;height:30px;border:2px solid var(--cream);background:transparent;color:var(--cream);font-family:var(--mono);font-weight:700;font-size:.75rem;cursor:pointer;padding:0}
+.dots button[aria-current="step"]{background:var(--mustard);border-color:var(--mustard);color:var(--ink)}
+.dots button.done{background:rgba(246,235,220,.18)}
+.stepper h3{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(1.4rem,3vw,2rem);line-height:1}
+.stepper h3 span{color:var(--mustard);margin-right:.35em}
+.stepper p{color:#E3D8C8;max-width:52em;min-height:4.4em}
+.stepper-nav{display:flex;gap:12px;flex-wrap:wrap}
+.stepper-nav .btn{font-size:.85rem;padding:9px 16px}
+.stepper-nav .btn[disabled]{opacity:.4;cursor:default;transform:none}
+.stepper-hint{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;color:#9aa6ab}
+.steps{list-style:none;margin:34px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;counter-reset:s}
+.steps li{counter-increment:s;background:var(--cream);border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);padding:18px 20px 18px 74px;position:relative;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.steps li:hover,.steps li.on{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--ink)}
+.steps li.on{background:#FFF4DE;outline:3px solid var(--red);outline-offset:-3px}
+.steps li::before{content:counter(s);position:absolute;left:16px;top:14px;width:44px;height:44px;display:grid;place-items:center;background:var(--ink);color:var(--mustard);font-family:var(--display);font-weight:900;font-size:1.4rem}
+.steps h4{margin:0 0 6px;font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:1rem}
+.steps p{font-size:1.08rem;color:#3b322a}
+code,.k{font-family:var(--mono);font-size:.86em;background:rgba(10,11,12,.08);padding:1px 5px;border-radius:2px}
+
+/* tableau des broches */
+.pins{width:100%;border-collapse:collapse;background:var(--cream);border:3px solid var(--ink);box-shadow:8px 8px 0 var(--ink)}
+.pins th{background:var(--ink);color:var(--mustard);font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;text-align:left;padding:11px 16px}
+.pins td{padding:11px 16px;border-top:1.5px solid rgba(10,11,12,.18);vertical-align:top}
+.pins td:first-child{font-family:var(--display);font-weight:900;font-size:.95rem;text-transform:uppercase}
+.pins td:nth-child(2){font-family:var(--mono);font-size:.9rem;color:var(--red);font-weight:700;white-space:nowrap}
+.pins tr.free td{color:#7a6d5f} .pins tr.free td:nth-child(2){color:#7a6d5f}
+.table-scroll{overflow-x:auto;padding:0 10px 10px 0}
+
+/* alimentation */
+.power{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.pw{border:3px solid var(--ink);box-shadow:7px 7px 0 var(--ink);background:var(--cream);padding:20px 22px;position:relative}
+.pw .v{font-family:var(--led);font-size:2.6rem;line-height:1;color:var(--red)}
+.pw h3{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:1.15rem;margin:6px 0 8px}
+.pw p{font-size:1.08rem;color:#3b322a}
+.pw.both{background:var(--petrol);color:var(--cream)} .pw.both p{color:#DCE7EA} .pw.both .v{color:var(--mustard)}
+
+/* terminal */
+.term{background:#0B0F12;color:#D9E4E8;border:3px solid var(--ink);box-shadow:8px 8px 0 var(--petrol);font-family:var(--mono);font-size:.92rem;overflow:hidden}
+.term-bar{display:flex;align-items:center;gap:7px;padding:9px 14px;background:#1A2328;border-bottom:2px solid var(--ink);font-size:.7rem;letter-spacing:.1em;color:#8fa0a7}
+.term-bar i{width:11px;height:11px;border-radius:50%;background:var(--red)} .term-bar i:nth-child(2){background:var(--mustard)} .term-bar i:nth-child(3){background:#3CB371}
+.term pre{margin:0;padding:18px 20px;overflow-x:auto;line-height:1.7}
+.term .c{color:#7d8b91} .term .p{color:#7FE3A0} .term .w{color:#FF8A70}
+
+.cta{background:var(--red);color:var(--cream);border-block:4px solid var(--ink);text-align:center}
+.cta h2{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(2rem,5vw,3.4rem);line-height:.95;text-shadow:5px 5px 0 var(--ink)}
+.cta p{margin-top:12px}
+.cta .row{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin-top:26px}
+
+footer{background:var(--ink);color:#B9AE9E;padding-block:26px;font-size:.95rem}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center}
+.footer-logo{height:40px;width:auto}
+
+
+/* ======== fond tech + guide ======== */
+body{background:#0B1317;color:var(--cream)}
+.techbg{position:fixed;inset:0;z-index:-2;pointer-events:none}
+.techbg svg{display:block}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(120% 80% at 50% 0,rgba(8,12,15,.35),rgba(8,12,15,.78) 70%)}
+.head{border-bottom:3px solid var(--mustard);background:linear-gradient(180deg,rgba(8,12,15,.55),rgba(8,12,15,.2))}
+.crumbs{color:#A9B4B9} .crumbs span::before{color:#4a5a62}
+.lede{color:#DCD1C1} .lede b{color:var(--ink)}
+.sec-head .tag{color:var(--mustard)}
+.sec-head p{color:#CFC4B4}
+.sec-head h2{text-shadow:4px 4px 0 #000}
+.head h1{text-shadow:5px 5px 0 #000}
+.src{color:#8d9aa0}
+.stat{box-shadow:6px 6px 0 var(--c,var(--red))}
+.sheet{color:var(--ink);box-shadow:10px 10px 0 var(--mustard)}
+.box{color:var(--ink);box-shadow:8px 8px 0 var(--red)}
+.box.dark{background:#0F1A20;box-shadow:8px 8px 0 var(--mustard)}
+.warn{color:var(--ink);box-shadow:8px 8px 0 var(--red)}
+.steps li{color:var(--ink);box-shadow:5px 5px 0 var(--mustard)}
+.steps li:hover,.steps li.on{box-shadow:8px 8px 0 var(--mustard)}
+.pins{color:var(--ink);box-shadow:8px 8px 0 var(--mustard)}
+.pw{color:var(--ink);box-shadow:7px 7px 0 var(--red)}
+.pw.both{box-shadow:7px 7px 0 var(--mustard)}
+.term{box-shadow:8px 8px 0 var(--mustard)}
+.btn{box-shadow:5px 5px 0 #000}
+.steps-band{background:rgba(8,13,16,.72);border-block:3px solid var(--mustard)}
+
+.avatar{display:block;width:84px;height:84px;border-radius:50%;border:3px solid var(--ink);box-shadow:0 0 0 3px var(--mustard),5px 5px 0 3px #000;flex:none;animation:bob 3.2s ease-in-out infinite}
+.avatar.sm{width:62px;height:62px}
+@keyframes bob{50%{transform:translateY(-5px) rotate(-3deg)}}
+.bubble{position:relative;background:var(--cream);color:var(--ink);border:2px solid var(--ink);box-shadow:4px 4px 0 #000;padding:10px 14px;font-size:1.08rem;line-height:1.35;max-width:46em}
+.bubble::before{content:"";position:absolute;left:-12px;top:22px;border:6px solid transparent;border-right:8px solid var(--ink);border-left:0}
+.bubble::after{content:"";position:absolute;left:-8px;top:24px;border:4px solid transparent;border-right:7px solid var(--cream);border-left:0}
+.bubble b.who{display:inline-block;font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;background:var(--red);color:var(--cream);padding:2px 7px;margin-right:8px;vertical-align:.15em}
+.guide-intro{display:flex;align-items:center;gap:18px;margin-top:26px}
+.coach{display:flex;align-items:flex-start;gap:16px}
+.coach .bubble{flex:1;min-height:3.2em}
+.stepper p.bubble{color:var(--ink);max-width:none}
+.float-guide{position:fixed;right:18px;bottom:18px;z-index:80;display:flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;background:var(--ink);color:var(--cream);border:2px solid var(--mustard);box-shadow:4px 4px 0 var(--red);cursor:pointer;text-align:left;
+  transition:transform .25s,opacity .25s;max-width:min(330px,calc(100vw - 36px))}
+.float-guide img{width:48px;height:48px;border-radius:50%;border:2px solid var(--mustard);flex:none}
+.float-guide small{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;color:var(--mustard)}
+.float-guide strong{display:block;font-family:var(--display);font-weight:900;font-size:.82rem;text-transform:uppercase;line-height:1.1}
+.float-guide.off{opacity:0;transform:translateY(20px);pointer-events:none}
+@media (max-width:560px){
+  .guide-intro{align-items:flex-start}
+  .avatar{width:64px;height:64px}
+  .avatar.sm{width:48px;height:48px}
+  .float-guide{padding:5px} .float-guide span{display:none}
+}
+@media (prefers-reduced-motion:reduce){.avatar{animation:none}.float-guide{transition:none}}
+
+
+/* ======== vidéo du montage ======== */
+.vid-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:34px;align-items:start}
+.tv-frame{position:relative;background:linear-gradient(160deg,#3a3d42,#232528 40%,#18191b);border:4px solid var(--ink);border-radius:24px;padding:18px 18px 48px;box-shadow:inset 0 3px 0 rgba(255,255,255,.12),12px 12px 0 var(--mustard)}
+.tv-frame video{display:block;width:100%;aspect-ratio:16/9;background:#000;border-radius:14px/18px;border:3px solid #000}
+.tv-frame .osd{position:absolute;top:28px;right:32px;font-family:var(--led);font-size:1.3rem;color:#FF5A45;text-shadow:0 0 8px currentColor;pointer-events:none;transition:opacity .3s}
+.tv-frame .osd::before{content:"●";margin-right:6px}
+.tv-frame.playing .osd{opacity:0}
+.tv-frame .foot{position:absolute;left:22px;right:22px;bottom:12px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-weight:700;font-size:.66rem;letter-spacing:.28em;color:#8d9096}
+.tv-frame .foot i{display:inline-block;width:18px;height:18px;border-radius:50%;margin-left:8px;background:radial-gradient(circle at 35% 30%,#62656b,#1b1c1f 70%);border:2px solid var(--ink);vertical-align:middle}
+.chapters{position:relative;list-style:none;margin:0;padding:0;border:3px solid var(--ink);background:var(--slate);box-shadow:8px 8px 0 var(--red)}
+.chapters li+li{border-top:1.5px solid #22343E}
+#chapters,#chapters2{max-height:min(560px,70vh);overflow-y:auto;scrollbar-color:var(--mustard) var(--slate)}
+.chapters button{display:grid;grid-template-columns:3.4em 1fr;gap:10px;align-items:baseline;width:100%;padding:10px 14px;background:none;border:0;color:var(--cream);text-align:left;cursor:pointer;font-family:var(--body);font-size:1.02rem;line-height:1.25;position:relative}
+.chapters button:hover{background:#17262F}
+.chapters time{font-family:var(--mono);font-size:.74rem;color:var(--mustard)}
+.chapters b{font-family:var(--display);font-weight:900;font-size:.82rem;text-transform:uppercase;letter-spacing:.02em}
+.chapters button[aria-current="true"]{background:var(--mustard);color:var(--ink)}
+.chapters button[aria-current="true"] time{color:var(--ink)}
+.chapters .bar{position:absolute;left:0;bottom:0;height:3px;background:var(--red);width:0}
+.vid-note{margin-top:14px;font-family:var(--mono);font-size:.72rem;color:#9aa6ab;letter-spacing:.04em}
+@media (max-width:900px){.vid-grid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){.tv-frame{padding:10px 10px 40px;border-radius:16px}.tv-frame .osd{top:18px;right:22px}}
+
+@media (max-width:900px){
+  .nav-links{display:none}
+  .cols,.steps,.power{grid-template-columns:minmax(0,1fr)}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  .nav-logo b{display:none}
+  .warn{grid-template-columns:minmax(0,1fr)}
+  .steps li{padding-left:20px;padding-top:70px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .flow{animation:none}
+  .btn,.steps li,.diagram .part{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="techbg" aria-hidden="true">
+<svg width="100%" height="100%">
+  <defs>
+    <radialGradient id="glowY"><stop offset="0" stop-color="#F2B705" stop-opacity=".9"/><stop offset="1" stop-color="#F2B705" stop-opacity="0"/></radialGradient>
+    <radialGradient id="glowR"><stop offset="0" stop-color="#FF5A45" stop-opacity=".9"/><stop offset="1" stop-color="#FF5A45" stop-opacity="0"/></radialGradient>
+    <pattern id="tech" width="400" height="600" patternUnits="userSpaceOnUse">
+      <rect width="400" height="600" fill="#0B1317"/>
+      <!-- pistes -->
+      <g stroke="#1B2A33" stroke-width="2" fill="none">
+        <path d="M0 240 H400 M0 430 H400 M205 0 V600 M150 240 V430 M280 430 V600"/>
+        <path d="M196 120 H214 M140 330 H158 M270 500 H288 M60 230 V248 M330 178 V196" stroke="#24363F"/>
+      </g>
+      <g fill="#24363F"><circle cx="196" cy="120" r="3"/><circle cx="140" cy="330" r="3"/><circle cx="270" cy="500" r="3"/><circle cx="60" cy="248" r="3"/><circle cx="330" cy="196" r="3"/></g>
+      <!-- panneau grilles d'aération -->
+      <path d="M12 12 H176 L196 32 V210 L176 230 H12 Z" fill="#141F26" stroke="#24363F" stroke-width="2"/>
+      <path d="M20 20 H172 L188 36" fill="none" stroke="#2C414C" stroke-width="1"/>
+      <g fill="#070C0F"><rect x="30" y="44" width="140" height="7" rx="3"/><rect x="30" y="60" width="140" height="7" rx="3"/><rect x="30" y="76" width="140" height="7" rx="3"/><rect x="30" y="92" width="140" height="7" rx="3"/><rect x="30" y="108" width="100" height="7" rx="3"/></g>
+      <rect x="30" y="140" width="56" height="56" rx="4" fill="#0E1820" stroke="#24363F" stroke-width="2"/>
+      <circle cx="58" cy="168" r="16" fill="none" stroke="#2C414C" stroke-width="3"/><circle cx="58" cy="168" r="5" fill="#24363F"/>
+      <rect x="104" y="150" width="70" height="6" fill="#DB352B"/><rect x="104" y="164" width="44" height="6" fill="#24363F"/><rect x="104" y="178" width="58" height="6" fill="#24363F"/>
+      <rect x="30" y="208" width="22" height="4" fill="#FF5A45"><animate attributeName="opacity" values="1;.25;1" dur="2.4s" repeatCount="indefinite"/></rect>
+      <circle cx="41" cy="210" r="12" fill="url(#glowR)" opacity=".7"/>
+      <!-- panneau moutarde -->
+      <path d="M214 12 H388 V150 L360 178 H262 L214 130 Z" fill="#F2B705" stroke="#B58A00" stroke-width="2"/>
+      <path d="M222 22 H378 V146" fill="none" stroke="#FFD34D" stroke-width="1.2"/>
+      <rect x="234" y="40" width="124" height="12" fill="#1B1503"/>
+      <g fill="#1B1503"><rect x="234" y="64" width="8" height="40"/><rect x="248" y="64" width="8" height="40"/><rect x="262" y="64" width="8" height="40"/><rect x="276" y="64" width="8" height="40"/></g>
+      <circle cx="338" cy="104" r="20" fill="#0B1317" stroke="#B58A00" stroke-width="4"/><circle cx="338" cy="104" r="8" fill="#F2B705"/>
+      <path d="M300 64 H366 M300 74 H350" stroke="#B58A00" stroke-width="3"/>
+      <!-- panneau ports -->
+      <path d="M12 248 H120 L140 268 V420 H12 Z" fill="#141F26" stroke="#24363F" stroke-width="2"/>
+      <circle cx="50" cy="300" r="20" fill="#070C0F" stroke="#2C414C" stroke-width="3"/><circle cx="50" cy="300" r="9" fill="none" stroke="#24363F" stroke-width="2"/>
+      <circle cx="104" cy="300" r="11" fill="#070C0F" stroke="#2C414C" stroke-width="2"/>
+      <g fill="#22343E"><rect x="28" y="346" width="16" height="9"/><rect x="50" y="346" width="16" height="9"/><rect x="72" y="346" width="16" height="9"/><rect x="94" y="346" width="16" height="9"/><rect x="28" y="362" width="16" height="9"/><rect x="50" y="362" width="16" height="9"/><rect x="72" y="362" width="16" height="9"/><rect x="94" y="362" width="16" height="9"/></g>
+      <rect x="28" y="392" width="40" height="5" fill="#F2B705"/>
+      <!-- grand panneau à fenêtre -->
+      <path d="M158 196 H388 V400 L368 420 H158 Z" fill="#121C22" stroke="#24363F" stroke-width="2"/>
+      <path d="M180 220 H350 L366 236 V330 H180 Z" fill="#070C0F" stroke="#2C414C" stroke-width="2"/>
+      <rect x="196" y="244" width="62" height="6" fill="#F2B705"/>
+      <g fill="#22343E"><rect x="196" y="262" width="150" height="3"/><rect x="196" y="274" width="120" height="3"/><rect x="196" y="286" width="136" height="3"/><rect x="196" y="298" width="90" height="3"/></g>
+      <rect x="196" y="312" width="10" height="6" fill="#FF5A45"><animate attributeName="opacity" values=".3;1;.3" dur="1.6s" repeatCount="indefinite"/></rect>
+      <rect x="212" y="312" width="10" height="6" fill="#7FE3A0"/>
+      <g stroke="#24363F" stroke-width="4" stroke-linecap="round"><path d="M190 352 H300"/><path d="M190 376 H260"/></g>
+      <rect x="240" y="344" width="14" height="16" rx="2" fill="#2C414C"/><rect x="226" y="368" width="14" height="16" rx="2" fill="#2C414C"/>
+      <circle cx="340" cy="376" r="18" fill="none" stroke="#2C414C" stroke-width="3"/><path d="M332 376 H348 M340 368 V384" stroke="#2C414C" stroke-width="3"/>
+      <!-- panneau bas, lamelles -->
+      <path d="M12 438 H250 L270 458 V588 H12 Z" fill="#141F26" stroke="#24363F" stroke-width="2"/>
+      <g fill="#070C0F"><rect x="30" y="460" width="210" height="9"/><rect x="30" y="478" width="180" height="9"/><rect x="30" y="496" width="210" height="9"/><rect x="30" y="514" width="150" height="9"/><rect x="30" y="532" width="200" height="9"/></g>
+      <rect x="30" y="556" width="74" height="12" fill="#F2B705"/><rect x="112" y="556" width="12" height="12" fill="#DB352B"/>
+      <circle cx="235" cy="562" r="9" fill="url(#glowY)"/><circle cx="235" cy="562" r="3" fill="#FFE27A"/>
+      <!-- panneau pétrole -->
+      <path d="M288 438 H388 V568 L368 588 H288 Z" fill="#0E3A4C" stroke="#14526A" stroke-width="2"/>
+      <circle cx="338" cy="490" r="24" fill="#0A2C3A" stroke="#14526A" stroke-width="3"/><circle cx="338" cy="490" r="9" fill="#F2B705"/>
+      <g fill="#14526A"><rect x="304" y="534" width="68" height="5"/><rect x="304" y="546" width="50" height="5"/><rect x="304" y="558" width="60" height="5"/></g>
+      <!-- vis -->
+      <g fill="#2C414C"><circle cx="22" cy="22" r="3"/><circle cx="378" cy="410" r="3"/><circle cx="22" cy="578" r="3"/><circle cx="168" cy="206" r="3"/></g>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#tech)"/>
+</svg>
+</div>
+
+<nav class="top-nav" aria-label="Navigation principale">
+  <div class="wrap">
+    <a class="nav-logo" href="index.html"><img src="logo.webp" alt="Calendar Game by Parchap" width="1200" height="810"><b>CG-01</b></a>
+    <div class="nav-links">
+      <a href="#video">Vidéo</a>
+      <a href="#schema">Schéma</a>
+      <a href="#appareils">Appareils</a>
+      <a href="#etapes">Étapes</a>
+      <a href="#broches">Broches</a>
+      <a href="#installer">Installer</a>
+    </div>
+    <a class="btn primary nav-cta" href="index.html#boutique">Boutique</a>
+  </div>
+</nav>
+
+<header class="head">
+  <div class="wrap">
+    <p class="crumbs"><a href="index.html">Calendar Game</a><span><a href="index.html#boutique">Boutique</a></span><span>Fichiers du boîtier</span><span>Raccordement</span></p>
+    <h1>Raccordement <em>Calendar Game</em></h1>
+    <p class="lede">Ce qu'il faut brancher, dans quel ordre, et ce qui est déjà soudé sur la carte. <b>Aucun fil à souder</b> pour faire tourner le calendrier.</p>
+    <div class="guide-intro">
+      <img class="avatar" src="img/guide.webp" alt="Pilote 01, l'héroïne de Calendar Game" width="360" height="360">
+      <p class="bubble"><b class="who">PILOTE 01</b>Salut&nbsp;! Je te guide pour brancher ta console. Suis les étapes sous le schéma&nbsp;: je te montre à chaque fois où regarder. Zéro soudure, promis.</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>4</b><span>Appareils à réunir</span></div>
+      <div class="stat" style="--c:var(--mustard)"><b>2</b><span>Prises à enficher</span></div>
+      <div class="stat" style="--c:#7FE3A0"><b>0</b><span>Soudure nécessaire</span></div>
+      <div class="stat" style="--c:var(--petrol-l)"><b>1S</b><span>Seule batterie acceptée</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="sec" id="video">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="tag">00 // Le montage en vidéo</p>
+        <h2>Le branchement avec Pilote 01</h2>
+        <p>Elle te montre chaque branchement, dans l'ordre. Pendant la lecture, le schéma et les étapes plus bas suivent la vidéo.</p>
+      </div>
+      <div class="vid-grid">
+        <div class="tv-frame" id="tvf">
+          <video id="vid" controls playsinline preload="metadata" poster="video/branchement.webp">
+            <source src="video/branchement.mp4" type="video/mp4">
+          </video>
+          <span class="osd" aria-hidden="true">PLAY · CH 03</span>
+          <div class="foot" aria-hidden="true"><span>PARCHAP · MONTAGE CG-01</span><span><i></i><i></i></span></div>
+        </div>
+        <div>
+          <ol class="chapters" id="chapters" aria-label="Chapitres de la vidéo"></ol>
+          <p class="vid-note">Touche un chapitre pour y aller. Durée : 6 min 22.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="sec" id="schema">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="tag">01 // Schéma</p>
+        <h2>Qui se branche où</h2>
+        <p>À gauche l'ordinateur. Au centre la carte, avec ce qui est déjà dessus. Autour, les deux seuls accessoires&nbsp;: le haut-parleur et la batterie.</p>
+      </div>
+
+      <figure class="sheet" style="margin:0">
+        <div class="sheet-top"><span><b>E32R28T</b> · ESP32-32E · 2,8" 240×320</span><span>Vue de dos · photo de la carte</span></div>
+        <div class="sheet-scroll">
+        <svg class="diagram" id="diagram" viewBox="0 0 1200 760" role="img" aria-labelledby="dg-t">
+          <title id="dg-t">Schéma de raccordement : l'ordinateur relié en USB-C à la carte E32R28T, le haut-parleur 8 ohms sur la prise SPEAKER et la batterie LiPo 1S sur la prise BAT.</title>
+          <defs>
+            <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#0A0B0C" stroke-width="1"/></pattern>
+          </defs>
+
+          <!-- grille -->
+          <g stroke="#CDB89B" stroke-width="1" stroke-dasharray="3 5">
+            <line x1="150" y1="0" x2="150" y2="760"/><line x1="330" y1="0" x2="330" y2="760"/>
+            <line x1="890" y1="0" x2="890" y2="760"/><line x1="1050" y1="0" x2="1050" y2="760"/>
+            <line x1="0" y1="560" x2="1200" y2="560"/>
+          </g>
+          <g fill="none" stroke="#0A0B0C" stroke-width="1.2"><circle cx="28" cy="28" r="11"/><path d="M22 28h12M28 22v12"/></g>
+
+          <!-- ===== CARTE ===== -->
+          <g class="part p-board">
+            <rect x="322" y="176" width="576" height="334" fill="none" stroke="#0A0B0C" stroke-width="1" stroke-dasharray="6 5"/>
+            <text x="322" y="166" font-size="12" font-weight="700" fill="#0A0B0C">CARTE E32R28T · DÉJÀ SOUDÉ : RIEN À CÂBLER À L'INTÉRIEUR</text>
+            <image href="img/carte-e32r28t.webp" x="330" y="190" width="560" height="310"/>
+            <!-- repères déjà sur la carte -->
+            <g stroke="#5F6468" stroke-width="1.2" fill="none">
+              <path d="M800 330 L940 300"/><path d="M680 445 L940 440"/><path d="M560 492 L640 590"/><path d="M700 200 L760 120"/><path d="M342 276 L250 205"/>
+            </g>
+            <g fill="#5F6468"><circle cx="800" cy="330" r="3.5"/><circle cx="680" cy="445" r="3.5"/><circle cx="560" cy="492" r="3.5"/><circle cx="700" cy="200" r="3.5"/><circle cx="342" cy="276" r="3.5"/></g>
+            <g class="pill" data-x="940" data-y="300"><rect fill="#3B4044"/><text x="948" y="298" font-size="11.5" fill="#F6EBDC"><tspan x="948">ESP32-32E · 2 CŒURS 240 MHz</tspan><tspan x="948" dy="15">WI-FI 2,4 GHz · 4 Mo FLASH</tspan></text></g>
+            <g class="pill"><rect fill="#3B4044"/><text x="948" y="444" font-size="11.5" fill="#F6EBDC">MICROSD · LIBRE</text></g>
+            <g class="pill"><rect fill="#3B4044"/><text x="648" y="600" font-size="11.5" fill="#F6EBDC">UART · LIBRE</text></g>
+            <g class="pill"><rect fill="#3B4044"/><text x="768" y="118" font-size="11.5" fill="#F6EBDC"><tspan x="768">SPI + EXTENSION 35 / 27</tspan><tspan x="768" dy="15">LIBRES</tspan></text></g>
+            <g class="pill"><rect fill="#3B4044"/><text x="170" y="196" font-size="11.5" fill="#F6EBDC">RESET · BOOT</text></g>
+            <text x="908" y="652" font-size="11" fill="#5F6468"><tspan x="908">FACE AVANT, DÉJÀ SOUDÉS :</tspan><tspan x="908" dy="16">ÉCRAN ILI9341 240×320</tspan><tspan x="908" dy="16">TACTILE XPT2046</tspan><tspan x="908" dy="16">AMPLI · CHARGEUR TP4054</tspan><tspan x="908" dy="16">USB CH340C</tspan></text>
+          </g>
+
+          <!-- ===== ORDINATEUR ===== -->
+          <g class="part p-pc" fill="none" stroke="#0A0B0C" stroke-width="1.6" stroke-linejoin="round">
+            <rect x="52" y="262" width="176" height="112" rx="7" fill="#F6EBDC"/>
+            <rect x="62" y="272" width="156" height="92" rx="2" fill="#0B0F12"/>
+            <path d="M36 374 H244 L232 392 H48 Z" fill="#E5CCAE"/>
+            <path d="M118 383 H162"/>
+            <g stroke="none" font-size="9.5">
+              <text x="70" y="290" fill="#7FE3A0">&gt; python flash.py</text>
+              <text x="70" y="306" fill="#9AB1BC">port COM4 · CH340</text>
+              <text x="70" y="322" fill="#9AB1BC">écriture 0x1000…</text>
+              <rect x="70" y="332" width="104" height="8" fill="#7FE3A0"/>
+              <rect x="174" y="332" width="34" height="8" fill="#2a3a40"/>
+              <text x="70" y="356" fill="#F2B705">100 % · OK</text>
+            </g>
+            <text x="40" y="420" font-size="12" font-weight="700" fill="#0A0B0C" stroke="none">ORDINATEUR</text>
+            <text font-size="11" fill="#5F6468" stroke="none"><tspan x="40" y="438">WINDOWS / MACOS / LINUX</tspan><tspan x="40" dy="15">PYTHON 3.11+</tspan><tspan x="40" dy="15">PILOTE CH340</tspan></text>
+          </g>
+
+          <!-- ===== CÂBLE USB-C ===== -->
+          <g class="part p-usb">
+            <path d="M244 368 C290 368 286 343 318 343" fill="none" stroke="#0A0B0C" stroke-width="6" stroke-linecap="round"/>
+            <path d="M244 368 C290 368 286 343 318 343" fill="none" stroke="#DB352B" stroke-width="2.2" class="flow"/>
+            <rect x="314" y="335" width="20" height="16" rx="3" fill="#F6EBDC" stroke="#0A0B0C" stroke-width="1.6"/>
+            <g class="pill"><rect fill="#DB352B"/><text x="196" y="510" font-size="11.5" fill="#F6EBDC"><tspan x="196">USB-C DONNÉES</tspan><tspan x="196" dy="15">5 V + SÉRIE</tspan></text></g>
+            <path d="M282 357 L250 494" stroke="#DB352B" stroke-width="1.2" fill="none"/>
+          </g>
+
+          <!-- ===== HAUT-PARLEUR ===== -->
+          <g class="part p-spk">
+            <g fill="none" stroke="#0A0B0C" stroke-width="1.6">
+              <circle cx="558" cy="66" r="42" fill="#F6EBDC"/>
+              <circle cx="558" cy="66" r="35"/>
+              <circle cx="558" cy="66" r="12" fill="#E5CCAE"/>
+              <path d="M558 31c10 8 14 18 12 23M558 101c-10-8-14-18-12-23M523 66c8-10 18-14 23-12M593 66c-8 10-18 14-23 12M533 41c3 12 9 18 15 18M583 91c-3-12-9-18-15-18M583 41c-12 3-18 9-18 15M533 91c12-3 18-9 18-15" stroke-width="1"/>
+            </g>
+            <path d="M552 106 C552 140 553 160 553 186" fill="none" stroke="#DB352B" stroke-width="2.6"/>
+            <path d="M564 106 C564 140 563 160 563 186" fill="none" stroke="#0A0B0C" stroke-width="2.6"/>
+            <rect x="545" y="184" width="26" height="14" rx="2" fill="#F6EBDC" stroke="#0A0B0C" stroke-width="1.6"/>
+            <path d="M548 191h20" stroke="#0A0B0C" stroke-width="1"/>
+            <path d="M604 60 L640 44" stroke="#0A0B0C" stroke-width="1.2"/>
+            <g class="pill"><rect fill="#0A0B0C"/><text x="648" y="38" font-size="11.5" fill="#F6EBDC"><tspan x="648">HAUT-PARLEUR 8 Ω · 1 W · Ø 20 mm</tspan><tspan x="648" dy="15">PRISE SPEAKER · 2 BROCHES</tspan></text></g>
+            <text x="440" y="122" font-size="10.5" fill="#5F6468"><tspan x="440">GPIO 26 = SON</tspan><tspan x="440" dy="14">GPIO 4 = AMPLI</tspan></text>
+          </g>
+
+          <!-- ===== BATTERIE ===== -->
+          <g class="part p-bat">
+            <path d="M424 600 C424 548 473 552 473 502" fill="none" stroke="#0A0B0C" stroke-width="2.6"/>
+            <path d="M436 600 C436 552 488 552 488 502" fill="none" stroke="#DB352B" stroke-width="2.6"/>
+            <path d="M436 600 C436 552 488 552 488 502" fill="none" stroke="#F6EBDC" stroke-width="1.2" class="flow"/>
+            <rect x="463" y="486" width="34" height="16" rx="2" fill="#F6EBDC" stroke="#0A0B0C" stroke-width="1.6"/>
+            <text x="466" y="498" font-size="10" font-weight="700" fill="#0A0B0C">−</text><text x="485" y="498" font-size="10" font-weight="700" fill="#DB352B">+</text>
+            <rect x="392" y="600" width="200" height="140" rx="6" fill="#F6EBDC" stroke="#0A0B0C" stroke-width="1.6"/>
+            <rect x="392" y="600" width="200" height="16" fill="url(#hatch)" stroke="#0A0B0C" stroke-width="1.6"/>
+            <g font-size="11" fill="#0A0B0C">
+              <text x="408" y="642" font-weight="700" font-size="13">LiPo 1S · 3,7 V</text>
+              <text x="408" y="662">1000 mAh · 803040</text>
+              <text x="408" y="680" fill="#5F6468">4,2 V max · protection</text>
+              <text x="408" y="698" fill="#5F6468">30 × 40 × 8 mm</text>
+            </g>
+            <text x="560" y="728" font-size="18" font-weight="700" fill="#DB352B">+</text>
+            <path d="M392 668 L262 668" stroke="#DB352B" stroke-width="1.2"/>
+            <g class="pill"><rect fill="#DB352B"/><text x="96" y="664" font-size="11.5" fill="#F6EBDC"><tspan x="96">BATTERIE LIPO 1S</tspan><tspan x="96" dy="15">PRISE BAT · MX1.25</tspan><tspan x="96" dy="15">ROUGE = + · NOIR = −</tspan></text></g>
+            <text x="508" y="540" font-size="10.5" fill="#5F6468"><tspan x="508">GPIO 34 = JAUGE</tspan><tspan x="508" dy="14">CHARGE ~290 mA</tspan></text>
+          </g>
+        </svg>
+        </div>
+        <figcaption class="legend">
+          <span><i style="background:#DB352B"></i>Alimentation</span>
+          <span><i style="background:#0A0B0C"></i>Masse</span>
+          <span><i style="background:#5F6468"></i>Déjà sur la carte</span>
+          <span><i style="background:#F6EBDC"></i>À enficher</span>
+        </figcaption>
+      </figure>
+      <p class="src">Source : brochage du programme Calendar Game sur E32R28T · écran, tactile et ampli déjà sur la carte.</p>
+
+      <div class="stepper" aria-live="polite">
+        <div class="stepper-top">
+          <p class="tag" id="st-count">Étape 1 / 8</p>
+          <div class="dots" id="st-dots" role="group" aria-label="Choisir une étape"></div>
+        </div>
+        <h3 id="st-title"></h3>
+        <p id="st-text"></p>
+        <div class="coach">
+          <img class="avatar sm" src="img/guide.webp" alt="" width="360" height="360">
+          <p class="bubble" id="st-tip"></p>
+        </div>
+        <div class="stepper-nav">
+          <button class="btn ghost" type="button" id="st-prev">← Précédente</button>
+          <button class="btn primary" type="button" id="st-next">Suivante →</button>
+          <a class="btn ghost" href="#etapes">Toutes les étapes</a>
+        </div>
+        <p class="stepper-hint">Flèches ← → du clavier pour changer d'étape.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sec" id="appareils" style="padding-top:20px">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="tag">02 // Appareils</p>
+        <h2>À réunir, et ce qui est déjà là</h2>
+      </div>
+      <div class="cols">
+        <div class="box">
+          <h3>À réunir</h3>
+          <ul class="items">
+            <li><b>Carte E32R28T</b> — LCDWIKI «&nbsp;2.8inch ESP32-32E Display&nbsp;». Écran, tactile, Wi-Fi, ampli, chargeur et USB sont déjà dessus.</li>
+            <li><b>Câble USB-C données</b> — alimente la carte, charge la batterie, et sert de port série pour installer le programme.</li>
+            <li><b>Batterie LiPo 1S</b> — un seul élément, 3,7&nbsp;V, protection intégrée, prise MX1.25 2 broches. 1000&nbsp;mAh ou plus conseillé.<span class="ref">Exemple : 803040 · 1000 mAh · 30 × 40 × 8 mm · prise 1,25 mm 2 broches</span></li>
+            <li><b>Haut-parleur 8 Ω</b> — seulement s'il n'est pas déjà sur la prise SPEAKER.<span class="ref">Exemple : 8 Ω 1 W · Ø 20 mm · fil 10 cm avec prise 2 broches</span></li>
+            <li><b>Ordinateur + multimètre</b> — le multimètre sert uniquement à vérifier la polarité avant le premier branchement de la batterie.</li>
+          </ul>
+        </div>
+        <div class="box dark">
+          <h3>Déjà sur la carte <small>NE PAS RECÂBLER</small></h3>
+          <ul class="items">
+            <li><b>Module ESP32-32E</b> (ESP32-D0WD-V3), 2 cœurs à 240&nbsp;MHz, 4&nbsp;Mo de flash, sans PSRAM.</li>
+            <li><b>Écran TFT ILI9341</b> 240 × 320, SPI sur GPIO 14, 13, 12, 15, 2, rétroéclairage 21.</li>
+            <li><b>Tactile résistif XPT2046</b>, SPI logiciel sur GPIO 25, 32, 39, 33.</li>
+            <li><b>Convertisseur USB CH340C</b> sur la prise USB-C.</li>
+            <li><b>Chargeur TP4054</b> et isolation de la batterie quand l'USB est branché.</li>
+            <li><b>Pont diviseur</b> vers GPIO 34 pour la jauge. <b>Ampli</b> haut-parleur commandé par GPIO 4.</li>
+            <li><b>Lecteur microSD</b> et broches d'extension 35 / 27&nbsp;: libres, le programme ne s'en sert pas.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="warn" role="note">
+        <span class="ico" aria-hidden="true">!</span>
+        <div>
+          <h3>Polarité batterie</h3>
+          <p>Vérifie au multimètre avant d'enficher. Rouge = +, noir = −. Une LiPo 2S (7,4&nbsp;V), une LiFePO4, des piles ou du 5&nbsp;V sur la prise BAT grillent la carte. Un connecteur inversé aussi.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec steps-band" id="etapes">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="tag">03 // Étapes, dans l'ordre</p>
+        <h2>Huit étapes, zéro soudure</h2>
+        <p>Le détail de chaque étape. Touche une étape&nbsp;: le schéma met en avant ce qu'il faut brancher.</p>
+      </div>
+
+      <ol class="steps" id="steps">
+        <li data-tip="Le piège n°1&nbsp;: un câble USB-C qui ne fait que charger. Prends un câble qui sert aussi aux transferts de fichiers." data-hl="all"><h4>Rassembler le matériel</h4><p>Pose sur la table&nbsp;: la carte E32R28T, un câble USB-C qui transmet les données (pas un câble charge seule), une batterie LiPo 1S avec protection et prise MX1.25 2 broches, un multimètre, et le haut-parleur 8&nbsp;Ω si la carte n'en a pas déjà un branché. Sur l'ordinateur&nbsp;: Python 3.11 ou plus, et le pilote CH340 si Windows ne voit pas le port COM.</p></li>
+        <li data-tip="Cherche les petites inscriptions blanches sur la carte&nbsp;: SPEAKER en haut, BAT en bas. C'est là qu'on va brancher." data-hl="board"><h4>Repérer les prises sur la carte</h4><p>Sans rien brancher, tourne la carte. Face avant&nbsp;: l'écran 2,8" et le tactile, déjà soudés. Face arrière&nbsp;: prise USB-C, prise batterie 2 broches (marquée BAT), prise haut-parleur 2 broches (marquée SPEAKER), lecteur microSD (inutile ici) et un connecteur d'extension. Écran, tactile, ampli, chargeur TP4054 et puce USB CH340C sont déjà sur la carte&nbsp;: tu ne soudes rien.</p></li>
+        <li data-tip="La prise SPEAKER est en haut de la carte. Enfonce la fiche bien droite, jusqu'au clic." data-hl="spk board"><h4>Brancher le haut-parleur</h4><p>Si un haut-parleur est déjà en place, passe à l'étape suivante. Sinon, enfiche le haut-parleur 8&nbsp;Ω sur le connecteur SPEAKER, 2 broches. L'amplificateur est sur la carte&nbsp;: le programme l'allume en mettant GPIO 4 à l'état bas, et envoie le son sur GPIO 26. Pas de fil à souder vers l'ESP32.</p></li>
+        <li data-tip="Multimètre en tension continue, calibre 20&nbsp;V. Pointe rouge sur le fil rouge, noire sur le noir. Entre 3,3 et 4,2&nbsp;V&nbsp;: c'est bon&nbsp;!" data-hl="bat"><h4>Contrôler la batterie au multimètre</h4><p>Mesure la tension entre les deux fils de la batterie, avant de la brancher. Tu dois lire environ 3,7&nbsp;V (entre 3,3&nbsp;V et 4,2&nbsp;V). Le fil rouge est le +, le noir le −. Si tu lis 7,4&nbsp;V, c'est une 2S&nbsp;: ne la branche pas. Si le connecteur est inversé par rapport au marquage de la carte, un seul essai peut griller le chargeur.</p></li>
+        <li data-tip="L'écran s'allume et un port COM apparaît&nbsp;? Parfait, la carte et le câble sont OK." data-hl="pc usb board"><h4>Allumer d'abord à l'USB, sans batterie</h4><p>Branche le câble USB-C entre l'ordinateur et la carte, batterie encore débranchée. L'écran doit s'allumer (rétroéclairage). Sous Windows, un port COM apparaît (souvent COM4). Si rien n'apparaît, installe le pilote CH340, puis réessaie avec un autre câble&nbsp;: beaucoup de câbles USB-C ne font que charger et n'ont pas les fils de données.</p></li>
+        <li data-tip="Repère le petit + sous la prise BAT&nbsp;: le fil rouge va de ce côté. Ne force jamais de travers." data-hl="bat board"><h4>Débrancher l'USB, puis enclencher la batterie</h4><p>Enlève le câble USB. Aligne le connecteur MX1.25&nbsp;: rouge sur +, noir sur −, pas de 1,25&nbsp;mm. Enfonce-le à fond, sans forcer de travers. La carte peut s'allumer toute seule sur batterie. Si l'écran reste noir, vérifie le clic du connecteur et la tension de la batterie.</p></li>
+        <li data-tip="Jauge verte qui se remplit en boucle = ça charge. Tu peux tout laisser branché." data-hl="usb bat board"><h4>Rebrancher l'USB pour charger</h4><p>Remets le câble USB-C. La carte fonctionne alors sur l'USB. Un transistor isole la batterie du reste du circuit&nbsp;: la batterie ne fait que se charger (puce TP4054, environ 290&nbsp;mA, arrêt à 4,2&nbsp;V). Tu peux laisser les deux branchés en même temps. La jauge du calendrier passe en vert et se remplit en boucle tant que l'USB est là.</p></li>
+        <li data-tip="Dernière ligne droite&nbsp;! Choisis bien un Wi-Fi 2,4&nbsp;GHz&nbsp;: la carte ne voit pas le 5&nbsp;GHz." data-hl="pc usb"><h4>Installer le programme, puis le premier réglage</h4><p>Dans le dossier firmware&nbsp;: <code>pip install -r requirements.txt</code>, puis <code>python flash.py</code> (première fois) ou <code>python deploy.py</code> (mise à jour sans effacer les notes). Au premier écran&nbsp;: REGL → WIFI, choisis le réseau 2,4&nbsp;GHz et tape le mot de passe sur le clavier de l'écran. METEO → VILLE. L'heure se règle toute seule. Le volume se règle de 0 à 10 dans REGL.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec" id="broches">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="tag">04 // Broches utilisées par le programme</p>
+        <h2>Pour contrôler ou réparer</h2>
+        <p>Tu n'as pas à relier ces GPIO à la main&nbsp;: ils vont déjà aux puces de la carte.</p>
+      </div>
+      <div class="table-scroll">
+        <table class="pins">
+          <thead><tr><th>Fonction</th><th>GPIO</th><th>Rôle</th></tr></thead>
+          <tbody>
+            <tr><td>Écran ILI9341</td><td>14, 13, 12, 15, 2, 21</td><td>SCK, MOSI, MISO, CS, DC, rétroéclairage</td></tr>
+            <tr><td>Tactile XPT2046</td><td>25, 32, 39, 33</td><td>SCK, MOSI, MISO, CS (SPI logiciel)</td></tr>
+            <tr><td>Haut-parleur</td><td>26 et 4</td><td>26 = DAC / PWM, 4 = ampli actif à l'état bas</td></tr>
+            <tr><td>Jauge batterie</td><td>34</td><td>Entrée analogique, pont diviseur par 2</td></tr>
+            <tr class="free"><td>microSD (libre)</td><td>5, 18, 19, 23</td><td>CS, SCK, MISO, MOSI — non utilisé</td></tr>
+            <tr class="free"><td>Extension (libre)</td><td>35, 27, 3,3 V, GND</td><td>35 en entrée seulement</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="alimentation" style="padding-top:20px">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="tag">05 // Alimentation une fois tout branché</p>
+        <h2>Trois façons de l'alimenter</h2>
+      </div>
+      <div class="power">
+        <article class="pw"><p class="v">5 V</p><h3>USB seul</h3><p>La carte prend 5&nbsp;V sur l'USB-C. Suffisant pour installer le programme et s'en servir sur le bureau.</p></article>
+        <article class="pw"><p class="v">3,7 V</p><h3>Batterie seule</h3><p>La carte prend 3,7&nbsp;V sur la prise BAT. L'écran s'éteint après 10 minutes de veille pour économiser. Un toucher le rallume.</p></article>
+        <article class="pw both"><p class="v">5 V + 3,7 V</p><h3>USB + batterie</h3><p>L'USB alimente la carte et charge la batterie. La batterie est isolée du reste. On peut laisser les deux en place en permanence.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="installer" style="padding-top:20px">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="tag">06 // Commandes d'installation</p>
+        <h2>Le programme sur la carte</h2>
+        <p>Pilote 01 t'explique l'installation du programme, du port USB au premier démarrage, avec les pannes les plus fréquentes. Les commandes sont juste en dessous, à copier. Port par défaut&nbsp;: COM4, ou la variable <code>PORT_CARTE</code>.</p>
+      </div>
+      <div class="vid-grid" style="margin-bottom:34px">
+        <div class="tv-frame" id="tvf2">
+          <video id="vid2" controls playsinline preload="metadata" poster="video/firmware.webp">
+            <source src="video/firmware.mp4" type="video/mp4">
+          </video>
+          <span class="osd" aria-hidden="true">PLAY · CH 04</span>
+          <div class="foot" aria-hidden="true"><span>PARCHAP · FIRMWARE CG-01</span><span><i></i><i></i></span></div>
+        </div>
+        <div>
+          <ol class="chapters" id="chapters2" aria-label="Chapitres de la vidéo du firmware"></ol>
+          <p class="vid-note">Touche un chapitre pour y aller. Durée : 6 min 31.</p>
+        </div>
+      </div>
+      <div class="term">
+        <div class="term-bar"><i></i><i></i><i></i><span style="margin-left:8px">firmware/</span></div>
+<pre><span class="c"># outils Python, une seule fois</span>
+<span class="p">&gt;</span> pip install -r requirements.txt
+
+<span class="c"># première fois : </span><span class="w">efface la carte</span>
+<span class="p">&gt;</span> python flash.py
+
+<span class="c"># ensuite : garde notes, réglages et records</span>
+<span class="p">&gt;</span> python deploy.py
+
+<span class="c"># autre port que COM4 (PowerShell)</span>
+<span class="p">&gt;</span> $env:PORT_CARTE = "COM5"</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec cta">
+    <div class="wrap">
+      <h2>Tout est branché&nbsp;?</h2>
+      <p>Il ne reste plus qu'à imprimer le boîtier et à refermer la console.</p>
+      <div class="row"><a class="btn ghost" href="index.html#boutique">Retour à la boutique</a><a class="btn ghost" href="index.html#jeux">Voir les 25 jeux</a></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><a class="nav-logo" href="index.html"><img class="footer-logo" src="logo.webp" alt="Calendar Game by Parchap" width="1200" height="810" loading="lazy"></a><span>Notice de raccordement · carte E32R28T · aucune soudure.</span></div>
+</footer>
+
+<button class="float-guide off" id="fg" type="button" aria-label="Revenir à l'étape en cours">
+  <img src="img/guide.webp" alt="" width="360" height="360">
+  <span><small>PILOTE 01 · ÉTAPE <b id="fg-n">1</b> / 8</small><strong id="fg-t">Rassembler le matériel</strong></span>
+</button>
+
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const dg = $('#diagram');
+
+/* étiquettes du schéma : le cadre s'ajuste au texte */
+function sizePills() {
+  dg.querySelectorAll('.pill').forEach(g => {
+    const b = g.querySelector('text').getBBox(), r = g.querySelector('rect');
+    r.setAttribute('x', b.x - 8); r.setAttribute('y', b.y - 5);
+    r.setAttribute('width', b.width + 16); r.setAttribute('height', b.height + 10);
+    r.setAttribute('rx', 3);
+  });
+}
+sizePills();
+if (document.fonts) document.fonts.ready.then(sizePills);
+
+/* étapes */
+const items = [...document.querySelectorAll('#steps li')];
+const N = items.length;
+let cur = 0;
+$('#st-dots').innerHTML = items.map((_, i) => '<button type="button" aria-label="Étape '+(i+1)+'">'+(i+1)+'</button>').join('');
+const dots = [...document.querySelectorAll('#st-dots button')];
+function show(i, scroll) {
+  cur = Math.max(0, Math.min(N - 1, i));
+  const li = items[cur];
+  $('#st-count').textContent = 'Étape ' + (cur + 1) + ' / ' + N;
+  $('#st-title').innerHTML = '<span>' + (cur + 1) + '.</span>' + li.querySelector('h4').textContent;
+  $('#st-text').innerHTML = li.querySelector('p').innerHTML;
+  dots.forEach((d, k) => { d.toggleAttribute('aria-current', k === cur); if (k === cur) d.setAttribute('aria-current', 'step'); d.classList.toggle('done', k < cur); });
+  items.forEach((x, k) => x.classList.toggle('on', k === cur));
+  dg.dataset.hl = li.dataset.hl;
+  $('#st-tip').innerHTML = '<b class="who">PILOTE 01</b>' + li.dataset.tip;
+  $('#fg-n').textContent = cur + 1;
+  $('#fg-t').textContent = li.querySelector('h4').textContent;
+  $('#st-prev').disabled = cur === 0;
+  $('#st-next').disabled = cur === N - 1;
+  if (scroll) $('.sheet').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'});
+}
+dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
+items.forEach((li, i) => li.addEventListener('click', () => show(i, true)));
+$('#st-prev').addEventListener('click', () => show(cur - 1));
+$('#st-next').addEventListener('click', () => show(cur + 1));
+addEventListener('keydown', e => {
+  if (e.target.closest('input,textarea')) return;
+  const r = $('.stepper').getBoundingClientRect();
+  if (r.bottom < 0 || r.top > innerHeight) return;
+  if (e.key === 'ArrowRight') show(cur + 1);
+  if (e.key === 'ArrowLeft') show(cur - 1);
+});
+show(0);
+
+/* ---------- vidéos : chapitres synchronisés avec le schéma et les étapes ---------- */
+const mmss = t => Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2, '0');
+const players = [];
+function player(vid, list, frame, CHAP) {
+  list.innerHTML = CHAP.map((c, i) => '<li><button type="button"><time>' + mmss(c.t) + '</time><span><b>' + c.n + '</b><br>' + c.d + '</span><i class="bar"></i></button></li>').join('');
+  const btns = [...list.querySelectorAll('button')];
+  let curCh = -1;
+  const chapterAt = t => { let k = 0; CHAP.forEach((c, i) => { if (t >= c.t) k = i; }); return k; };
+  function setChapter(k, sync) {
+    if (k === curCh) return;
+    curCh = k;
+    btns.forEach((b, i) => b.setAttribute('aria-current', String(i === k)));
+    if (list.scrollHeight > list.clientHeight) list.scrollTop = btns[k].parentElement.offsetTop - list.clientHeight / 3;
+    if (!sync) return;
+    if (CHAP[k].step >= 0) show(CHAP[k].step);
+    else if (CHAP[k].step === -1) dg.dataset.hl = 'all';
+  }
+  btns.forEach((b, i) => b.addEventListener('click', () => {
+    vid.currentTime = CHAP[i].t + .05;
+    setChapter(i, true);
+    vid.play().catch(() => {});
+  }));
+  vid.addEventListener('timeupdate', () => {
+    const t = vid.currentTime, k = chapterAt(t);
+    setChapter(k, !vid.paused);
+    const end = k + 1 < CHAP.length ? CHAP[k + 1].t : (vid.duration || CHAP[k].t + 8);
+    btns.forEach((b, i) => { b.querySelector('.bar').style.width = i === k ? Math.min(100, (t - CHAP[k].t) / (end - CHAP[k].t) * 100) + '%' : '0'; });
+  });
+  vid.addEventListener('play', () => { frame.classList.add('playing'); players.forEach(o => { if (o !== vid) o.pause(); }); });
+  vid.addEventListener('pause', () => frame.classList.remove('playing'));
+  players.push(vid);
+  setChapter(0, false);
+}
+player($('#vid'), $('#chapters'), $('#tvf'), [
+  {t: 0,     n: 'Branchement',     d: 'Calendar Game, carte E32R28T : rien à souder.', step: -1},
+  {t: 35.5,  n: 'Au programme',    d: 'Matériel, carte, étapes, logiciel, erreurs à éviter.', step: -1},
+  {t: 50,    n: '1 · Matériel',    d: "L'inventaire de départ.", step: 0},
+  {t: 56.5,  n: 'À réunir',        d: 'USB-C données, LiPo 1S, multimètre, haut-parleur : le reste est déjà sur la carte.', step: 0},
+  {t: 100.5, n: '2 · La carte',    d: 'La E32R28T, le cerveau de Calendar Game.', step: 1},
+  {t: 138,   n: 'Deux prises',     d: "SPK = haut-parleur, BAT = batterie, plus l'USB-C.", step: 1},
+  {t: 155,   n: '3 · Étapes',      d: "La séquence, dans l'ordre.", step: -1},
+  {t: 162,   n: 'Montage',         d: 'Matériel → prises → haut-parleur → multimètre.', step: 2},
+  {t: 197.5, n: '3,7 volts',       d: 'LiPo 1S seulement. Rouge +, noir −. Jamais 7,4 V.', step: 3},
+  {t: 240.5, n: "USB d'abord",     d: 'Allumer sans batterie, puis BAT, puis recharge, puis le programme.', step: 4},
+  {t: 277.5, n: 'Alimentation',    d: 'USB seul, batterie seule, les deux ensemble.', step: 6},
+  {t: 310.5, n: '4 · À éviter',    d: 'Ne jamais brancher ça sur la prise BAT : 2S, LiFePO4, piles, 5 V.', step: 5},
+  {t: 355.5, n: 'Ensuite',         d: "Le programme s'installe avec Python : flash.py.", step: 7},
+  {t: 379.5, n: 'Calendar Game',   d: 'Le montage est prêt.', step: 6},
+]);
+player($('#vid2'), $('#chapters2'), $('#tvf2'), [
+  {t: 0,     n: 'Le programme',          d: 'Calendar Game sur E32R28T : MicroPython, pas Arduino.', step: -2},
+  {t: 29,    n: 'Au programme',          d: 'Matériel, Arduino, port USB, flash, premier démarrage, pannes.', step: -2},
+  {t: 55.5,  n: '1 · Prérequis',         d: 'Carte, USB-C données, Python 3.11+, pilote CH340, dossier firmware.', step: 7},
+  {t: 101.5, n: '2 · Pas Arduino',       d: "L'IDE Arduino ne peut pas installer ce logiciel.", step: -2},
+  {t: 139,   n: '3 · Le port USB',       d: 'Identifier la connexion (souvent COM4).', step: 4},
+  {t: 182,   n: '4 · Flasher',           d: "L'envoi vers la carte : python flash.py.", step: 7},
+  {t: 225.5, n: 'Autre port',            d: "Si ce n’est pas COM4 : $env:PORT_CARTE = 'COM5' ou export PORT_CARTE=…", step: 7},
+  {t: 248.5, n: '5 · Premier démarrage', d: 'Wi-Fi, ville, heure.', step: 7},
+  {t: 309,   n: '6 · Pannes',            d: 'Les cas les plus fréquents.', step: -2},
+  {t: 314.5, n: 'Si ça bloque',          d: "Pas de port : CH340. flash.py : fermer Thonny. Écran noir : attendre, relancer. Pas de Wi-Fi : 2,4 GHz.", step: 4},
+  {t: 361,   n: 'Prêt',                  d: 'La carte vide devient Calendar Game. Tu peux jouer.', step: 7},
+  {t: 388,   n: 'Calendar Game',         d: "C'est installé.", step: -2},
+]);
+
+/* guide flottant : visible quand le pas-à-pas n'est pas à l'écran */
+const fg = $('#fg'), stp = $('.stepper');
+fg.addEventListener('click', () => $('.sheet').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'}));
+if ('IntersectionObserver' in window) {
+  let stepVis = false, headVis = true;
+  const upd = () => fg.classList.toggle('off', stepVis || headVis);
+  new IntersectionObserver(es => { stepVis = es[0].isIntersecting; upd(); }).observe(stp);
+  new IntersectionObserver(es => { headVis = es[0].isIntersecting; upd(); }).observe($('.head'));
+}
+/* au chargement le schéma montre tout, l'étape 1 étant « tout rassembler » */
+})();
+</script>
+</body>
+</html>
