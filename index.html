@@ -1,0 +1,1406 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calendar Game</title>
+<meta name="description" content="Calendar Game : une mini-télé rétro qui sert d'agenda tactile et de météo toute l'année, et de calendrier de l'Avent avec 25 jeux d'arcade des années 80 du 1er au 25 décembre.">
+<meta name="theme-color" content="#122028">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Montserrat:ital,wght@0,800;0,900;1,900&family=Permanent+Marker&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --paper:#EEDBC4; --paper2:#E5CCAE; --cream:#F6EBDC;
+  --red:#DB352B; --red-d:#A9241D; --petrol:#0E526C; --petrol-d:#0A3D51; --petrol-l:#2C8FA8;
+  --slate:#122028; --slate2:#1A2D37; --ink:#0A0B0C;
+  --mustard:#F2B705; --orange:#E8622C; --foam:#9CC3D3; --sky:#7FC4DA;
+  --display:"Montserrat", "Arial Black", Impact, sans-serif;
+  --body:"Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+  --led:"VT323", ui-monospace, Consolas, monospace;
+  --marker:"Permanent Marker", "Comic Sans MS", cursive;
+  --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35 0 0 0 0 .22 0 0 0 0 .1 0 0 0 .13 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  --dots:radial-gradient(rgba(10,11,12,.16) 1.3px,transparent 1.7px);
+}
+*{box-sizing:border-box}
+img{max-width:100%;display:block}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{margin:0;background:var(--paper) var(--grain);color:var(--ink);font-family:var(--body);font-size:1.2rem;line-height:1.42;overflow-x:hidden}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--mustard);outline-offset:3px}
+.wrap{max-width:1200px;margin-inline:auto;padding-inline:20px}
+h1,h2,h3{text-wrap:balance;margin:0}
+p{margin:0}
+.tag{font-family:var(--mono);font-weight:700;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase}
+
+/* ======================= HERO ======================= */
+.hero{position:relative;overflow:hidden;margin:14px;border-radius:2px;isolation:isolate;
+  padding-block:42px 300px;color:var(--cream);
+  background:linear-gradient(180deg,#081218 0%,#122028 30%,#1B2E3D 56%,#3A2C45 74%,#8A3B3A 84%,#E07A4A 88%,#0E526C 88.2%,#0E526C 100%);
+  box-shadow:inset 0 0 0 2px var(--cream),inset 0 0 0 7px var(--slate),inset 0 0 0 9px var(--red)}
+.hero::before,.hero::after{content:"";position:absolute;width:34px;height:34px;z-index:6;pointer-events:none;
+  border:4px solid var(--red);background:var(--cream)}
+.hero::before{top:0;left:0;border-width:0 4px 4px 0;clip-path:polygon(0 0,100% 0,100% 30%,30% 30%,30% 100%,0 100%)}
+.hero::after{top:0;right:0;border-width:0 0 4px 4px;clip-path:polygon(0 0,100% 0,100% 100%,70% 100%,70% 30%,0 30%)}
+.corner{position:absolute;bottom:0;width:34px;height:34px;z-index:6;background:var(--cream);pointer-events:none}
+.corner.l{left:0;clip-path:polygon(0 0,30% 0,30% 70%,100% 70%,100% 100%,0 100%)}
+.corner.r{right:0;clip-path:polygon(70% 0,100% 0,100% 100%,0 100%,0 70%,70% 70%)}
+
+.stars{position:absolute;inset:0 0 30% 0;z-index:-3;pointer-events:none}
+.stars i{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--cream);opacity:.8;animation:tw 3s ease-in-out infinite alternate}
+.stars i.b{width:3px;height:3px;background:#FFE6B8}
+.stars svg{position:absolute;width:22px;height:22px;fill:#F3C46A;animation:tw 2.4s ease-in-out infinite alternate}
+@keyframes tw{from{opacity:.25;transform:scale(.7)}to{opacity:1;transform:scale(1.1)}}
+
+.planet{position:absolute;z-index:-3;left:-90px;top:30px;width:min(46vw,520px);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 64% 40%,transparent 0 48%,var(--orange) 48.5%,#F09A63 58%,#E8622C 70%,#B9452A 100%);
+  -webkit-mask:radial-gradient(circle at 64% 40%,transparent 47.8%,#000 48.3%);mask:radial-gradient(circle at 64% 40%,transparent 47.8%,#000 48.3%);opacity:.92;
+  animation:drift 30s ease-in-out infinite alternate}
+.moon{position:absolute;z-index:-3;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#F7B98A,#C9643A)}
+.moon.m1{right:16%;top:9%} .moon.m2{left:37%;top:5%;width:12px;height:12px}
+@keyframes drift{to{transform:translate(18px,10px) rotate(4deg)}}
+
+.sun{position:absolute;z-index:-2;right:6%;bottom:300px;width:min(44vw,500px);aspect-ratio:1;border-radius:50%;transform:translateY(42%);
+  background:linear-gradient(180deg,#F2734A 0%,var(--red) 55%,#B8261F 100%);
+  -webkit-mask:linear-gradient(180deg,#000 0 52%,transparent 52% 55%,#000 55% 63%,transparent 63% 67%,#000 67% 74%,transparent 74% 79%,#000 79% 84%,transparent 84%);
+  mask:linear-gradient(180deg,#000 0 52%,transparent 52% 55%,#000 55% 63%,transparent 63% 67%,#000 67% 74%,transparent 74% 79%,#000 79% 84%,transparent 84%)}
+.giant{position:absolute;z-index:-2;left:50%;top:6%;transform:translateX(-50%);font-family:var(--display);font-weight:900;font-size:min(46vw,560px);line-height:.8;
+  color:transparent;-webkit-text-stroke:2px rgba(238,219,196,.12);letter-spacing:-.04em;pointer-events:none;user-select:none}
+.side-tag{position:absolute;z-index:2;top:50%;writing-mode:vertical-rl;transform:translateY(-50%) rotate(180deg);color:rgba(246,235,220,.55);white-space:nowrap}
+.side-tag.l{left:22px} .side-tag.r{right:22px;transform:translateY(-50%)}
+
+/* mer de nuages */
+.sea{position:absolute;left:0;right:0;bottom:0;height:300px;z-index:-1;pointer-events:none;overflow:hidden}
+.water-wrap{position:absolute;inset:0;perspective:280px;perspective-origin:50% 0}
+.water{position:absolute;left:-60%;right:-60%;top:0;height:900px;transform-origin:50% 0;transform:rotateX(76deg);
+  background-color:var(--petrol);
+  background-image:
+    radial-gradient(46% 11px at 50% 50%,rgba(246,235,220,.85) 95%,transparent),
+    radial-gradient(30% 8px at 50% 50%,rgba(156,195,211,.75) 95%,transparent),
+    linear-gradient(rgba(10,61,81,.7) 7px,transparent 7px);
+  background-size:520px 140px,300px 70px,100% 70px;
+  background-position:0 0,150px 35px,0 0;
+  animation:water 2.4s linear infinite;
+  -webkit-mask:linear-gradient(180deg,transparent 0,#000 12%);mask:linear-gradient(180deg,transparent 0,#000 12%)}
+@keyframes water{to{background-position:0 140px,150px 175px,0 140px}}
+.haze{position:absolute;left:0;right:0;top:-40px;height:80px;background:radial-gradient(60% 50% at 50% 50%,rgba(232,98,44,.45),transparent 70%);filter:blur(4px)}
+.clouds{position:absolute;inset:0;perspective:520px;perspective-origin:50% 0;transform-style:preserve-3d}
+.cloud{position:absolute;left:50%;top:0;width:var(--w);margin-left:calc(var(--w) / -2);transform-origin:50% 100%;
+  transform:translate3d(var(--x),var(--y),-2600px);opacity:0;animation:fly var(--d) linear infinite;will-change:transform,opacity}
+.cloud svg{display:block;width:100%;height:auto;overflow:visible}
+@keyframes fly{
+  0%{transform:translate3d(var(--x),var(--y),-2600px);opacity:0}
+  12%{opacity:1}
+  100%{transform:translate3d(var(--x),var(--y),330px);opacity:1}}
+
+.hero-grid{position:relative;z-index:3;display:grid;grid-template-columns:1.05fr 1fr;gap:44px;align-items:center}
+.label{display:inline-flex;gap:.8em;align-items:center;flex-wrap:wrap;color:var(--mustard)}
+.label b{background:var(--red);color:var(--cream);padding:3px 8px}
+.logo-img{width:min(100%,610px);height:auto;margin-block:14px 6px;filter:drop-shadow(0 14px 22px rgba(0,0,0,.5))}
+.kicker{font-family:var(--marker);font-size:clamp(1.8rem,3.8vw,2.6rem);line-height:1.05;color:var(--mustard);transform:rotate(-2deg);margin-top:4px}
+.lede{max-width:34em;color:#E9DDCB;margin-top:12px;font-size:1.26rem}
+
+.circuits{margin-top:22px;display:grid;gap:7px;width:fit-content;max-width:100%;background:#1B1D20;padding:12px;border:2px solid var(--ink);
+  box-shadow:6px 6px 0 var(--ink),inset 0 2px 0 #34373c}
+.tc{display:grid;grid-template-columns:repeat(5,auto);justify-content:start;gap:3px 8px}
+.tc .f{display:flex;flex-direction:column;align-items:center;gap:2px}
+.tc .f small{font-family:var(--mono);font-size:.56rem;letter-spacing:.14em;color:#b9b2a6;font-weight:700}
+.tc .f b{font-family:var(--led);font-weight:400;font-size:1.55rem;line-height:1;background:#0b0a09;padding:2px 7px;min-width:2.1ch;text-align:center;
+  box-shadow:inset 0 0 0 2px #000,inset 0 2px 6px rgba(0,0,0,.8);font-variant-numeric:tabular-nums}
+.tc .plate{grid-column:1/-1;justify-self:stretch;text-align:center;font-family:var(--mono);font-weight:700;letter-spacing:.22em;font-size:.66rem;color:var(--ink);padding:2px 6px}
+.tc.red b{color:#FF5A45;text-shadow:0 0 8px rgba(255,90,69,.8)} .tc.red .plate{background:var(--red);color:var(--cream)}
+.tc.green b{color:#7FE3A0;text-shadow:0 0 8px rgba(127,227,160,.7)} .tc.green .plate{background:var(--cream)}
+.tc.amber b{color:var(--mustard);text-shadow:0 0 8px rgba(242,183,5,.7)} .tc.amber .plate{background:var(--mustard)}
+
+.ctas{display:flex;flex-wrap:wrap;gap:14px;margin-top:24px}
+.btn{display:inline-flex;align-items:center;gap:.5em;text-decoration:none;font-family:var(--display);font-weight:900;text-transform:uppercase;letter-spacing:.04em;
+  font-size:1rem;padding:13px 22px;border:3px solid var(--ink);cursor:pointer;transition:transform .12s,box-shadow .12s}
+.btn.primary{background:var(--red);color:var(--cream);box-shadow:5px 5px 0 var(--ink)}
+.btn.ghost{background:var(--cream);color:var(--ink);box-shadow:5px 5px 0 var(--ink)}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--ink)}
+.btn:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink)}
+
+/* console */
+.tv-col{display:flex;flex-direction:column;align-items:center;gap:18px}
+.tv{container-type:inline-size;position:relative;width:100%;max-width:390px;transform:rotate(2deg);animation:hover 6s ease-in-out infinite}
+@keyframes hover{50%{transform:rotate(1deg) translateY(-8px)}}
+.tv-body{position:relative;display:grid;grid-template-columns:1fr 18cqw;gap:3cqw;padding:5cqw 4cqw 4cqw;border-radius:4.5cqw;
+  background:linear-gradient(160deg,#3a3d42 0%,#232528 35%,#18191b 100%);border:.8cqw solid var(--ink);
+  box-shadow:inset 0 .6cqw 0 rgba(255,255,255,.12),inset 0 -1cqw 0 rgba(0,0,0,.4),3cqw 3cqw 0 var(--ink),0 6cqw 10cqw rgba(0,0,0,.5)}
+.screw{position:absolute;width:3.4cqw;height:3.4cqw;border-radius:50%;background:radial-gradient(circle at 40% 35%,#9a9da3,#4a4d52 70%);box-shadow:inset 0 0 0 .4cqw #2a2c30}
+.screw::after{content:"";position:absolute;left:20%;right:20%;top:45%;height:12%;background:#1a1b1d;transform:rotate(40deg)}
+.screw.a{left:2cqw;top:2cqw}.screw.b{right:2cqw;top:2cqw}.screw.c{left:2cqw;bottom:2cqw}.screw.d{right:2cqw;bottom:2cqw}
+.tv-top{position:absolute;left:12%;right:12%;top:-3cqw;height:3cqw;background:#2a2c30;border:.6cqw solid var(--ink);border-bottom:0;border-radius:1.5cqw 1.5cqw 0 0;
+  background-image:repeating-linear-gradient(90deg,#3c3f44 0 1.2cqw,#2a2c30 1.2cqw 2.4cqw)}
+.tv-bezel{background:#0c0d0e;padding:2.4cqw;border-radius:2.4cqw;box-shadow:inset 0 0 0 .5cqw #2e3034}
+.crt{position:relative;aspect-ratio:3/4;border-radius:1.4cqw;overflow:hidden;background:#000}
+.crt canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges;touch-action:manipulation;cursor:crosshair}
+.crt::before,.crt::after{content:"";position:absolute;inset:0;pointer-events:none}
+.crt::before{z-index:2;background:linear-gradient(125deg,rgba(255,255,255,.14) 0 22%,transparent 22.5%)}
+.crt::after{z-index:1;background:repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 3px),radial-gradient(130% 130% at 50% 50%,transparent 60%,rgba(0,0,0,.5) 100%)}
+.tv-side{display:flex;flex-direction:column;align-items:center;gap:3cqw;padding-block:1cqw}
+.tv-chan{font-family:var(--led);font-size:4.4cqw;line-height:1.1;color:#7FE3A0;background:#06110a;padding:.3cqw 1cqw;border-radius:.6cqw;text-shadow:0 0 1.4cqw #3CFF7A;width:100%;text-align:center;white-space:nowrap;border:.4cqw solid #000}
+.knob{display:block;width:12cqw;aspect-ratio:1;border-radius:50%;border:.6cqw solid var(--ink);padding:0;position:relative;cursor:pointer;
+  background:radial-gradient(circle at 35% 30%,#F07A6E,var(--red) 55%,var(--red-d));box-shadow:0 .8cqw 0 var(--ink);transform:rotate(var(--rot,0deg));transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+.knob::after{content:"";position:absolute;top:9%;left:50%;width:1.3cqw;height:32%;background:var(--cream);transform:translateX(-50%);border-radius:1cqw}
+.leds{display:flex;flex-direction:column;gap:1.4cqw}
+.leds i{width:2.4cqw;height:2.4cqw;border-radius:50%;background:#3a1a16}
+.leds i:first-child{background:var(--red);box-shadow:0 0 1.6cqw var(--red);animation:blink 1.4s steps(2) infinite}
+@keyframes blink{50%{opacity:.35}}
+.grille{flex:1;width:100%;min-height:8cqw;background:radial-gradient(circle,#050505 40%,transparent 46%) 0 0/2.6cqw 2.6cqw;opacity:.9}
+.tv-brand{font-family:var(--mono);font-weight:700;font-size:3cqw;letter-spacing:.3em;color:#8d9096;writing-mode:vertical-rl}
+
+.deck{display:flex;gap:8px;background:var(--ink);padding:8px;border:2px solid var(--ink);box-shadow:5px 5px 0 rgba(0,0,0,.45)}
+.key{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:72px;padding:8px 10px 6px;border:0;cursor:pointer;
+  background:var(--cream);color:var(--ink);font-family:var(--display);font-weight:900;text-transform:uppercase;letter-spacing:.05em;font-size:.8rem;
+  box-shadow:0 5px 0 #9c8b74;transition:transform .08s,box-shadow .08s}
+.key .sym{font-size:1rem;line-height:1;color:var(--red)}
+.key[aria-pressed="true"]{transform:translateY(4px);box-shadow:0 1px 0 #9c8b74;background:var(--mustard)}
+.hint{font-size:1rem;color:#CFC3B2;text-align:center;max-width:32em}
+.hint b{color:var(--cream);font-weight:700}
+
+/* ======================= BANDES ======================= */
+.tapes-band{position:relative;height:110px;margin-top:-60px;z-index:4;pointer-events:none}
+.band{position:absolute;left:-5%;right:-5%;overflow:hidden;white-space:nowrap;border-block:3px solid var(--ink);font-family:var(--display);font-weight:900;font-size:1.05rem;letter-spacing:.06em;text-transform:uppercase}
+.band.one{top:24px;background:var(--red);color:var(--cream);transform:rotate(-2.2deg);box-shadow:0 6px 0 rgba(10,11,12,.25)}
+.band.two{top:40px;background:var(--mustard);color:var(--ink);transform:rotate(1.6deg);z-index:-1}
+.band-track{display:inline-flex;animation:scroll 40s linear infinite;padding-block:7px}
+.band.two .band-track{animation-direction:reverse;animation-duration:55s}
+.band-track span{padding-inline:1.1em}
+.band-track span::before{content:"◆";margin-right:1.1em;font-size:.7em;vertical-align:.15em}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+/* ======================= SECTIONS ======================= */
+.sec{padding-block:96px;position:relative}
+.sec-head{display:grid;gap:12px;margin-bottom:44px;max-width:780px}
+.sec-head .tag{color:var(--red)}
+.sec-head .tag::before{content:"";display:inline-block;width:34px;height:3px;background:currentColor;vertical-align:.3em;margin-right:10px}
+.sec-head h2{font-family:var(--display);font-weight:900;font-size:clamp(2rem,5vw,3.6rem);line-height:.95;text-transform:uppercase;letter-spacing:-.02em}
+.sec-head h2 em{font-style:normal;color:var(--red)}
+.sec-head p{max-width:40em;color:#3b322a}
+.on-dark .sec-head p{color:#D8CCBB}
+.on-dark .sec-head h2 em{color:var(--mustard)}
+.on-dark .sec-head .tag{color:var(--mustard)}
+
+/* deux faces */
+.sides{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:34px}
+.side{position:relative;overflow:hidden;padding:30px 28px 32px;color:var(--cream);border:3px solid var(--ink);box-shadow:10px 10px 0 var(--ink);display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:22px;align-items:start;isolation:isolate}
+.side.a{background:var(--petrol)} .side.b{background:var(--red)}
+.side::before{position:absolute;z-index:-1;right:-14px;bottom:-60px;font-family:var(--display);font-weight:900;font-size:300px;line-height:1;color:rgba(246,235,220,.13)}
+.side.a::before{content:"A"} .side.b::before{content:"B"}
+.side::after{content:"";position:absolute;z-index:-1;inset:0;background:var(--dots) 0 0/9px 9px;-webkit-mask:linear-gradient(135deg,#000,transparent 55%);mask:linear-gradient(135deg,#000,transparent 55%);opacity:.6}
+.side .tag{color:var(--mustard)}
+.side.b .tag{color:var(--ink)}
+.side h3{font-family:var(--display);font-weight:900;font-size:clamp(1.5rem,2.6vw,2rem);line-height:1;text-transform:uppercase;margin:8px 0 16px}
+.side ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.side li{padding-left:24px;position:relative}
+.side li::before{content:"";position:absolute;left:0;top:.5em;width:11px;height:11px;background:var(--cream);box-shadow:3px 3px 0 var(--ink)}
+.shot{background:#0c0d0e;padding:8px;border:3px solid var(--ink);box-shadow:6px 6px 0 var(--ink);transform:rotate(3deg)}
+.side.b .shot{transform:rotate(-3deg)}
+.shot img{width:100%;height:auto;image-rendering:pixelated}
+
+/* section rouge façon Akira */
+.rush{background:var(--red);color:var(--cream);overflow:hidden;isolation:isolate;border-block:4px solid var(--ink)}
+.rush::before{content:"";position:absolute;inset:-50%;z-index:-2;
+  background:repeating-linear-gradient(-24deg,transparent 0 46px,rgba(246,235,220,.16) 46px 49px,transparent 49px 120px,rgba(10,11,12,.16) 120px 124px,transparent 124px 170px,rgba(246,235,220,.08) 170px 190px,transparent 190px 260px);
+  animation:speed 1.2s linear infinite}
+@keyframes speed{to{transform:translate(-110px,-49px)}}
+.rush::after{content:"";position:absolute;inset:0;z-index:-1;background:var(--dots) 0 0/8px 8px;-webkit-mask:radial-gradient(70% 90% at 15% 50%,transparent 30%,#000 90%);mask:radial-gradient(70% 90% at 15% 50%,transparent 30%,#000 90%)}
+.rush-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:56px;align-items:center}
+.poster{position:relative;transform:rotate(-4deg)}
+.poster img{width:100%;height:auto;border:10px solid var(--cream);outline:3px solid var(--ink);box-shadow:16px 16px 0 var(--ink)}
+.poster .tag{position:absolute;left:-14px;bottom:28px;background:var(--ink);color:var(--cream);padding:7px 12px;transform:rotate(4deg)}
+.burst{position:absolute;right:-26px;top:-30px;width:130px;aspect-ratio:1;display:grid;place-content:center;text-align:center;color:var(--ink);font-family:var(--display);font-weight:900;line-height:.85;font-size:2.6rem;
+  background:var(--mustard);clip-path:polygon(50% 0,61% 13%,77% 6%,79% 23%,95% 25%,88% 40%,100% 52%,87% 62%,93% 78%,77% 79%,71% 95%,57% 87%,44% 100%,36% 85%,20% 92%,19% 76%,3% 72%,11% 58%,0 45%,13% 36%,8% 20%,25% 19%,30% 3%,42% 13%);
+  animation:spin 14s linear infinite}
+.burst small{display:block;font-size:.9rem;letter-spacing:.04em}
+.burst span{display:block;animation:spin 14s linear infinite reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.rush h2{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(2.2rem,6vw,5.2rem);line-height:.88;letter-spacing:-.03em;text-shadow:6px 6px 0 var(--ink)}
+.rush h2 span{display:block;white-space:nowrap}
+.rush h2 span:nth-child(2){color:var(--ink);text-shadow:6px 6px 0 rgba(246,235,220,.35);padding-left:.6em}
+.rush h2 span:nth-child(3){color:var(--mustard);padding-left:1.2em}
+.rush .brush{font-family:var(--marker);font-size:clamp(1.4rem,3vw,2rem);margin-top:22px;transform:rotate(-1.5deg)}
+.rush .tag{color:var(--ink)}
+.rush p.txt{max-width:30em;margin-top:14px;font-size:1.25rem}
+.stats{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.stat{background:var(--ink);color:var(--cream);padding:10px 16px;border:2px solid var(--ink);box-shadow:4px 4px 0 rgba(10,11,12,.35)}
+.stat b{display:block;font-family:var(--display);font-weight:900;font-size:2rem;line-height:1;color:var(--mustard)}
+.stat small{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase}
+
+/* météo */
+.meteo{background:var(--slate);color:var(--cream);overflow:hidden;isolation:isolate}
+.meteo::before{content:"";position:absolute;inset:0;z-index:-1;background:repeating-linear-gradient(-45deg,rgba(246,235,220,.025) 0 2px,transparent 2px 22px)}
+.cloud-deco{position:absolute;z-index:-1;opacity:.95;pointer-events:none}
+.cloud-deco.c1{right:-60px;top:40px;width:300px;animation:bob 9s ease-in-out infinite}
+.cloud-deco.c2{left:-80px;bottom:30px;width:360px;animation:bob 11s ease-in-out infinite reverse}
+@keyframes bob{50%{transform:translateX(24px)}}
+.wx{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:52px;align-items:center}
+.wx-copy{display:grid;gap:22px}
+.wx-list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.wx-list li{padding-left:26px;position:relative;color:#E5D9C8}
+.wx-list li::before{content:"";position:absolute;left:0;top:.5em;width:11px;height:11px;background:var(--sky);box-shadow:3px 3px 0 var(--red)}
+.wx-cities{display:flex;flex-wrap:wrap;gap:8px}
+.city{border:2px solid var(--cream);background:transparent;color:var(--cream);padding:6px 12px;cursor:pointer;font-family:var(--display);font-weight:800;letter-spacing:.04em;text-transform:uppercase;font-size:.8rem;transition:transform .12s}
+.city:hover{transform:translate(-2px,-2px);box-shadow:3px 3px 0 var(--red)}
+.city[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:var(--cream);box-shadow:3px 3px 0 var(--ink)}
+.wx-note{font-size:1rem;color:#A99D8C}
+.wx-board{background:#0F1B22;border:3px solid var(--ink);box-shadow:12px 12px 0 var(--red);font-family:var(--led);transform:rotate(1deg)}
+.wx-top{background:var(--red);color:var(--cream);display:flex;justify-content:space-between;gap:12px;padding:8px 16px;font-size:1.6rem;letter-spacing:.1em}
+.wx-row{display:grid;grid-template-columns:4.4rem 40px 2.4rem 1fr 2.4rem;align-items:center;gap:12px;padding:6px 16px;border-top:1px solid #1E3440;font-size:1.6rem;font-variant-numeric:tabular-nums}
+.wx-row.today{background:#17303C}
+.wx-day{line-height:1;color:var(--cream)} .wx-row.today .wx-day{color:var(--mustard)}
+.wx-day small{display:block;font-size:1rem;color:#8C9AA2}
+.wx-row canvas{width:40px;height:32px;image-rendering:pixelated;display:block}
+.wx-min{color:var(--sky);text-align:right} .wx-max{color:#F28A55}
+.wx-bar{position:relative;height:10px;background:#1B2F3A}
+.wx-bar i{position:absolute;top:0;bottom:0;background:linear-gradient(90deg,var(--sky),var(--mustard),var(--red))}
+.wx-foot{padding:8px 16px;font-size:1.15rem;color:#8C9AA2;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid #1E3440}
+.wx-foot b{color:#7FE3A0;font-weight:400}
+
+/* jeux */
+.jeux{background:var(--paper) var(--grain)}
+.jeux::before{content:"";position:absolute;right:0;top:0;width:45%;height:60%;background:var(--dots) 0 0/10px 10px;-webkit-mask:radial-gradient(80% 80% at 100% 0,#000,transparent 70%);mask:radial-gradient(80% 80% at 100% 0,#000,transparent 70%);pointer-events:none}
+.carts{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px}
+.cart{--c:var(--red);position:relative;display:flex;flex-direction:column;gap:6px;text-align:left;padding:18px 14px 12px;cursor:pointer;
+  background:var(--slate);color:var(--cream);border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);transition:transform .14s,box-shadow .14s}
+.cart::before{content:"";position:absolute;left:0;right:0;top:0;height:7px;background:var(--c)}
+.cart::after{content:attr(data-code);position:absolute;right:8px;top:12px;font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;color:#7d8a92}
+.cart:hover{transform:translate(-3px,-3px) rotate(-1deg);box-shadow:9px 9px 0 var(--ink)}
+.cart[aria-current="true"]{outline:3px solid var(--c);outline-offset:-8px}
+.cart .dn{font-family:var(--display);font-weight:900;font-size:2.5rem;line-height:.9;color:var(--c);margin-top:6px;font-variant-numeric:tabular-nums}
+.cart .gn{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:.98rem;line-height:1.05}
+.cart .gp{font-size:1rem;color:#C8BCAB;line-height:1.2}
+.cart .gc{margin-top:auto;padding-top:6px;font-family:var(--mono);font-size:.7rem;color:var(--sky);letter-spacing:.02em;line-height:1.3}
+.cart .gs{font-family:var(--mono);font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7d8a92}
+.cart .gs.on{color:#7FE3A0}
+.cart.finale{grid-column:1/-1;flex-direction:row;align-items:center;gap:26px;padding:22px 26px;background:var(--red);overflow:hidden;isolation:isolate}
+.cart.finale::before{background:var(--ink)}
+.cart.finale .bg{position:absolute;z-index:-1;right:2%;top:50%;transform:translateY(-50%);font-family:var(--display);font-weight:900;font-size:9rem;line-height:1;color:rgba(246,235,220,.14)}
+.cart.finale .dn{font-size:4.2rem;color:var(--mustard);text-shadow:4px 4px 0 var(--ink)}
+.cart.finale .fx{display:grid;gap:4px}
+.cart.finale .gn{font-size:1.8rem}
+.cart.finale .gp{color:var(--cream)}
+.cart.finale .gc{color:var(--ink)}
+.cart.finale .gs{color:var(--ink)}
+
+/* rétro */
+.retro{background:var(--paper2) var(--grain)}
+.retro-grid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:56px;align-items:center}
+.photo{position:relative;transform:rotate(2.5deg)}
+.photo img{width:100%;height:auto;border:10px solid var(--cream);outline:3px solid var(--ink);box-shadow:14px 14px 0 var(--petrol)}
+.photo::before,.photo::after{content:"";position:absolute;width:120px;height:34px;background:rgba(242,183,5,.75);border:1px solid rgba(10,11,12,.15)}
+.photo::before{left:-30px;top:18px;transform:rotate(-38deg)}
+.photo::after{right:-30px;bottom:24px;transform:rotate(-38deg)}
+.retro h2{font-family:var(--marker);font-weight:400;font-size:clamp(2rem,4.6vw,3.3rem);line-height:1.05;color:var(--red);transform:rotate(-2deg)}
+.retro .sub{margin-top:14px;max-width:32em;color:#3b322a}
+.icons{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:34px}
+.icons figure{margin:0;display:grid;justify-items:center;gap:10px}
+.icons .ic{width:min(100%,96px);aspect-ratio:1;display:grid;place-items:center;border:3px solid var(--ink);border-radius:50%;box-shadow:4px 4px 0 var(--ink);transition:transform .2s}
+.icons figure:hover .ic{transform:rotate(-8deg) scale(1.06)}
+.icons figure:nth-child(odd) .ic{background:var(--red)} .icons figure:nth-child(even) .ic{background:var(--petrol)}
+.icons svg{width:62%;height:auto;fill:none;stroke:var(--cream);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.icons figcaption{font-family:var(--display);font-weight:900;font-size:clamp(.66rem,1.6vw,.95rem);letter-spacing:.04em}
+
+/* jaquette */
+.pack-sec{background:var(--petrol);color:var(--cream);overflow:hidden;isolation:isolate}
+.pack-sec::before{content:"";position:absolute;inset:0;z-index:-1;background:repeating-linear-gradient(-30deg,rgba(255,255,255,.035) 0 3px,transparent 3px 26px)}
+.pack{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:50px;align-items:center}
+.box-shot{position:relative;max-width:440px;margin-inline:auto;animation:hover 7s ease-in-out infinite}
+.box-shot img{width:100%;height:auto;filter:drop-shadow(18px 22px 0 rgba(10,11,12,.55))}
+.pack-copy{display:grid;gap:20px}
+.pack-copy dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:12px 18px}
+.pack-copy dt{font-family:var(--mono);font-weight:700;font-size:.8rem;letter-spacing:.16em;color:var(--mustard);padding-top:.25em}
+.pack-copy dd{margin:0;color:#DCE7EA}
+.flat{display:block;border:3px solid var(--ink);box-shadow:8px 8px 0 var(--ink);background:var(--paper);transition:transform .15s}
+.flat:hover{transform:translate(-3px,-3px) rotate(-.5deg)}
+.flat img{width:100%;height:auto}
+
+/* fiche technique façon poster */
+.specs-sec{background:var(--mustard);overflow:hidden;isolation:isolate;border-block:4px solid var(--ink)}
+.specs-sec .huge{position:absolute;z-index:-1;left:-1%;top:50%;transform:translateY(-50%);font-family:var(--display);font-weight:900;font-size:min(32vw,420px);line-height:.8;color:var(--cream);letter-spacing:-.05em;white-space:nowrap;pointer-events:none}
+.sheet{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:40px;align-items:end}
+.sheet h2{font-family:var(--display);font-weight:900;font-size:clamp(2.2rem,5.5vw,4rem);line-height:.9;text-transform:uppercase;letter-spacing:-.02em}
+.sheet .tag{color:var(--ink)}
+.specs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 36px;margin:26px 0 0}
+.specs div{display:grid;grid-template-columns:9.5em 1fr;gap:12px;padding:11px 0;border-bottom:2px solid var(--ink)}
+.specs dt{font-family:var(--mono);font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-size:.74rem;padding-top:.35em}
+.specs dd{margin:0;font-size:1.15rem;font-weight:600}
+.idcard{background:var(--ink);color:var(--mustard);padding:18px;display:grid;gap:12px;font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;line-height:1.6;box-shadow:8px 8px 0 var(--cream)}
+.idcard b{font-family:var(--display);font-weight:900;font-size:3.6rem;line-height:.85;letter-spacing:-.03em;color:var(--cream)}
+.idcard .bars{height:44px;background:repeating-linear-gradient(90deg,var(--mustard) 0 2px,transparent 2px 4px,var(--mustard) 4px 5px,transparent 5px 8px,var(--mustard) 8px 11px,transparent 11px 12px,var(--mustard) 12px 13px,transparent 13px 17px)}
+.idcard .ok{color:#7FE3A0}
+
+/* final */
+.final{text-align:center;overflow:hidden;isolation:isolate;color:var(--cream);padding-bottom:230px;
+  background:linear-gradient(180deg,#081218 0%,#122028 45%,#3A2C45 70%,#8A3B3A 80%,#E07A4A 84%,#0E526C 84.2%)}
+.final .sun{bottom:auto;top:84%;right:50%;transform:translate(50%,-50%);width:min(70vw,560px)}
+.final .stars{inset:0 0 25% 0}
+.final h2{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(2.1rem,5.4vw,4rem);line-height:.95;letter-spacing:-.02em}
+.final h2 span{color:var(--mustard)}
+.final .tag{color:var(--mustard)}
+.countdown{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:30px auto 0;background:#1B1D20;padding:14px 18px;border:3px solid var(--ink);width:fit-content;max-width:100%;box-shadow:8px 8px 0 var(--ink)}
+.countdown .f{display:flex;flex-direction:column;align-items:center;gap:4px}
+.countdown b{font-family:var(--led);font-weight:400;font-size:clamp(2.2rem,6vw,3.4rem);line-height:1;color:#FF5A45;text-shadow:0 0 10px rgba(255,90,69,.8);background:#0b0a09;padding:2px 10px;min-width:2.4ch;font-variant-numeric:tabular-nums}
+.countdown small{font-family:var(--mono);font-size:.62rem;font-weight:700;letter-spacing:.2em;color:var(--cream);background:var(--red);padding:1px 8px}
+.final .ctas{justify-content:center;margin-top:32px}
+.note{margin-top:18px;color:#7FE3A0;font-family:var(--led);font-size:1.35rem;letter-spacing:.06em}
+.final-clouds{position:absolute;left:0;right:0;bottom:0;height:16%;z-index:-1;pointer-events:none}
+.final-clouds svg{position:absolute;bottom:20%}
+
+footer{background:var(--ink);color:#B9AE9E;padding-block:26px;font-size:.95rem}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center}
+footer b{font-family:var(--display);font-weight:900;color:var(--cream);letter-spacing:.02em}
+
+
+/* ======================= NAVIGATION ======================= */
+section[id]{scroll-margin-top:72px}
+.top-nav{position:sticky;top:0;z-index:90;background:var(--ink);color:var(--cream);border-bottom:3px solid var(--red);box-shadow:0 6px 14px rgba(0,0,0,.3)}
+.top-nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:62px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex:none}
+.nav-logo img{height:48px;width:auto;filter:drop-shadow(0 3px 0 rgba(0,0,0,.5));transition:transform .2s}
+.nav-logo:hover img{transform:rotate(-3deg) scale(1.06)}
+.nav-logo b{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;background:var(--red);color:var(--cream);padding:3px 7px}
+.nav-links{display:flex;gap:22px}
+.nav-links a{position:relative;font-family:var(--display);font-weight:800;font-size:.8rem;text-transform:uppercase;text-decoration:none;letter-spacing:.03em}
+.nav-links a::after{content:"";position:absolute;left:0;right:100%;bottom:-6px;height:3px;background:var(--mustard);transition:right .2s}
+.nav-links a:hover::after{right:0}
+.nav-cta{font-size:.8rem;padding:8px 14px;border-width:2px;box-shadow:4px 4px 0 var(--mustard)}
+.nav-cta:hover{box-shadow:6px 6px 0 var(--mustard)}
+
+/* ======================= SPOT TV ======================= */
+.spot{background:var(--slate);color:var(--cream);overflow:hidden;isolation:isolate}
+.spot::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 70% at 30% 50%,rgba(219,53,43,.22),transparent 70%),repeating-linear-gradient(-45deg,rgba(246,235,220,.025) 0 2px,transparent 2px 22px)}
+.spot-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:52px;align-items:center}
+.crt-tv{position:relative;background:linear-gradient(160deg,#3a3d42,#232528 40%,#18191b);border:4px solid var(--ink);border-radius:28px;padding:22px 22px 58px;
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.12),12px 12px 0 var(--red),0 30px 60px rgba(0,0,0,.5);transform:rotate(-1.5deg)}
+.glass{position:relative;aspect-ratio:16/9;border-radius:20px/26px;overflow:hidden;background:#000;box-shadow:inset 0 0 0 4px #000}
+.glass video{display:block;width:100%;height:100%;object-fit:cover}
+.glass::before,.glass::after{content:"";position:absolute;inset:0;pointer-events:none}
+.glass::before{z-index:2;background:linear-gradient(120deg,rgba(255,255,255,.13) 0 18%,transparent 18.5%)}
+.glass::after{z-index:1;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px),radial-gradient(120% 120% at 50% 50%,transparent 58%,rgba(0,0,0,.55) 100%)}
+.osd{position:absolute;z-index:3;top:12px;font-family:var(--led);font-size:1.45rem;line-height:1;letter-spacing:.06em;text-shadow:0 0 8px currentColor}
+.osd.l{left:16px;color:#FF5A45} .osd.r{right:16px;color:#7FE3A0}
+.osd.l::before{content:"●";margin-right:6px;animation:blink 1.2s steps(2) infinite}
+.crt-foot{position:absolute;left:24px;right:24px;bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.crt-foot .brand{font-family:var(--mono);font-weight:700;font-size:.7rem;letter-spacing:.3em;color:#8d9096}
+.crt-foot .dials{display:flex;gap:10px;align-items:center}
+.crt-foot .dials i{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#62656b,#1b1c1f 70%);border:2px solid var(--ink)}
+.snd{background:var(--red);border:2px solid var(--ink);color:var(--cream);font-family:var(--mono);font-weight:700;font-size:.7rem;letter-spacing:.08em;padding:6px 10px;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}
+.snd[aria-pressed="true"]{background:var(--mustard);color:var(--ink)}
+.spot h2{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(2.4rem,5.6vw,4.4rem);line-height:.9;letter-spacing:-.03em;text-shadow:5px 5px 0 var(--red)}
+.spot h2 span{display:block;color:var(--mustard);text-shadow:5px 5px 0 var(--ink)}
+.spot .tag{color:var(--mustard)}
+.spot p.txt{margin-top:16px;color:#D8CCBB;max-width:28em}
+
+/* ======================= BANNIERE CINE NOEL ======================= */
+.cine{position:relative;background:#000;color:var(--cream);overflow:hidden;isolation:isolate;border-block:4px solid var(--ink)}
+.cine video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-3}
+.cine::before{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(90deg,rgba(8,18,24,.94) 0%,rgba(8,18,24,.7) 38%,rgba(8,18,24,.1) 70%,transparent),repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 1px,transparent 1px 3px)}
+.cine::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border-block:22px solid #000}
+.cine .wrap{min-height:min(80vh,640px);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:16px;padding-block:90px}
+.cine .tag{color:var(--mustard)}
+.cine h2{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(2.4rem,6vw,4.8rem);line-height:.9;letter-spacing:-.03em;max-width:9.5em;text-shadow:5px 5px 0 var(--ink)}
+.cine h2 em{font-style:inherit;color:var(--mustard)}
+.cine .brush{font-family:var(--marker);font-size:clamp(1.3rem,2.6vw,1.8rem);color:var(--cream);transform:rotate(-1.5deg)}
+.cine .ctas{margin-top:8px;align-items:center}
+.cine .snd{position:absolute;right:20px;bottom:36px}
+
+/* ======================= BOUTIQUE ======================= */
+.shop{background:var(--paper2) var(--grain)}
+.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:34px}
+.product{position:relative;display:grid;grid-template-rows:auto 1fr auto;background:var(--slate);color:var(--cream);border:3px solid var(--ink);box-shadow:10px 10px 0 var(--ink);overflow:hidden;isolation:isolate;transition:transform .15s,box-shadow .15s}
+.product:hover{transform:translate(-3px,-3px);box-shadow:14px 14px 0 var(--ink)}
+.product::before{content:"";position:absolute;left:0;right:0;top:0;height:8px;background:var(--c,var(--red))}
+.product::after{content:attr(data-ghost);position:absolute;z-index:-1;right:-8px;bottom:40px;font-family:var(--display);font-weight:900;font-size:8.5rem;line-height:1;color:rgba(246,235,220,.06)}
+.product .head{padding:30px 26px 16px;border-bottom:2px dashed rgba(246,235,220,.18)}
+.product .badge{position:absolute;top:20px;right:16px;background:var(--mustard);color:var(--ink);font-family:var(--mono);font-weight:700;font-size:.62rem;letter-spacing:.08em;padding:4px 8px;border:2px solid var(--ink);transform:rotate(3deg)}
+.product h3{font-family:var(--display);font-weight:900;font-size:clamp(1.3rem,2.2vw,1.6rem);line-height:1.02;text-transform:uppercase;max-width:13em}
+.product .ref{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;color:var(--foam);margin-top:6px}
+.product ul{list-style:none;padding:22px 26px;margin:0;display:grid;gap:9px;align-content:start}
+.product li{position:relative;padding-left:22px;color:#E0D5C5}
+.product li::before{content:"▶";position:absolute;left:0;top:.3em;font-size:.7rem;color:var(--mustard)}
+.product .foot{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:18px 26px;background:#0d181e;border-top:3px solid var(--ink)}
+.price{font-family:var(--led);font-size:2.7rem;line-height:1;color:#7FE3A0;text-shadow:0 0 8px rgba(127,227,160,.55)}
+.price small{font-family:var(--mono);font-size:.75rem;color:#94a5ad;margin-left:6px;text-shadow:none}
+.btn[aria-disabled="true"]{background:#33434b;color:#B3BEC3;cursor:not-allowed;transform:none;box-shadow:5px 5px 0 var(--ink)}
+.shop-note{margin-top:30px;font-family:var(--mono);font-size:.78rem;letter-spacing:.04em;color:#5a4c3e}
+.footer-logo{height:40px;width:auto}
+.plink{color:inherit;text-decoration:underline;text-decoration-color:var(--mustard);text-decoration-thickness:3px;text-underline-offset:4px}
+.plink:hover{color:var(--mustard)}
+.buy-row{display:flex;gap:12px;flex-wrap:wrap}
+.buy-row .btn{font-size:.85rem;padding:10px 16px}
+
+
+/* ======================= FOND : VILLE DE NOËL ======================= */
+body{background:#081016;color:var(--cream)}
+.cityscape{position:fixed;inset:0;z-index:-2;pointer-events:none;background:#081016}
+.cityscape svg,.cityscape canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(6,10,13,.25),rgba(6,10,13,.45) 60%,rgba(6,10,13,.6))}
+.cityscape .tw{animation:twk 1.8s ease-in-out infinite alternate}
+.cityscape .tw1{animation-delay:-.6s} .cityscape .tw2{animation-delay:-1.2s}
+@keyframes twk{from{opacity:.25}to{opacity:1}}
+.cityscape .sleigh{animation:sleigh 48s linear infinite}
+@keyframes sleigh{from{transform:translate(-420px,250px)}to{transform:translate(1900px,90px)}}
+.cityscape .blink{animation:twk 1.1s steps(2) infinite}
+/* sections papier : vitre sombre sur la ville */
+#faces,.jeux,.retro,.shop{background:linear-gradient(180deg,rgba(6,11,15,.55),rgba(6,11,15,.4))}
+.jeux::before{display:none}
+#faces .sec-head p,.jeux .sec-head p,.shop .sec-head p,.retro .sub{color:#D6CBBB}
+#faces .sec-head h2,.jeux .sec-head h2,.shop .sec-head h2{text-shadow:4px 4px 0 #000}
+.retro h2{text-shadow:3px 3px 0 #000}
+.retro .tag{color:var(--sky)!important}
+.side,.product{box-shadow:10px 10px 0 #000}
+.cart{box-shadow:5px 5px 0 #000}
+.cart:hover{box-shadow:9px 9px 0 var(--mustard)}
+.icons figcaption{color:var(--cream)}
+.icons .ic{box-shadow:4px 4px 0 #000}
+.shop-note{color:#B9AE9E}
+@media (prefers-reduced-motion:reduce){.cityscape .tw,.cityscape .sleigh,.cityscape .blink{animation:none}}
+
+
+/* bouton jaquette gratuite */
+.free-dl{position:relative;display:flex;align-items:center;gap:18px;padding:14px 22px 14px 14px;margin-top:6px;text-decoration:none;color:var(--ink);background:var(--mustard);border:3px solid var(--ink);box-shadow:6px 6px 0 var(--red);transition:transform .15s,box-shadow .15s;animation:freeWiggle 3.2s ease-in-out infinite}
+.free-dl:hover{transform:translate(-3px,-3px) rotate(-1deg);box-shadow:10px 10px 0 var(--red);animation-play-state:paused}
+.free-dl::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 45%,transparent 60%);background-size:250% 100%;animation:freeShine 2.6s linear infinite;pointer-events:none}
+.free-burst{flex:none;width:94px;aspect-ratio:1;display:grid;place-items:center;background:var(--red);color:var(--cream);font-family:var(--display);font-weight:900;font-size:.82rem;letter-spacing:.02em;text-align:center;line-height:1;
+  clip-path:polygon(50% 0,61% 13%,77% 6%,79% 23%,95% 25%,88% 40%,100% 52%,87% 62%,93% 78%,77% 79%,71% 95%,57% 87%,44% 100%,36% 85%,20% 92%,19% 76%,3% 72%,11% 58%,0 45%,13% 36%,8% 20%,25% 19%,30% 3%,42% 13%);animation:freePulse 1.2s ease-in-out infinite}
+.free-burst span{transform:rotate(-12deg)}
+.free-txt{display:grid;gap:3px}
+.free-txt b{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:1.1rem;line-height:1}
+.free-txt small{font-family:var(--mono);font-size:.7rem;letter-spacing:.04em}
+.free-arrow{margin-left:auto;font-size:1.6rem;font-weight:900;animation:freeDrop 1.1s ease-in-out infinite}
+@keyframes freePulse{50%{transform:scale(1.12) rotate(8deg)}}
+@keyframes freeWiggle{0%,86%,100%{transform:rotate(0)}89%{transform:rotate(-1.5deg)}92%{transform:rotate(1.5deg)}95%{transform:rotate(-1deg)}}
+@keyframes freeShine{from{background-position:150% 0}to{background-position:-100% 0}}
+@keyframes freeDrop{50%{transform:translateY(5px)}}
+@media (prefers-reduced-motion:reduce){.free-dl,.free-dl::after,.free-burst,.free-arrow{animation:none}}
+
+
+/* onglet de téléchargement des STL */
+.stl-tab{margin:0 26px 22px;border:2px solid var(--mustard);background:#0d181e}
+.stl-tab summary{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;list-style:none;font-family:var(--display);font-weight:900;font-size:.85rem;text-transform:uppercase;color:var(--mustard)}
+.stl-tab summary::-webkit-details-marker{display:none}
+.stl-tab summary::after{content:"▾";margin-left:auto;transition:transform .2s}
+.stl-tab[open] summary::after{transform:rotate(180deg)}
+.stl-tab summary small{font-family:var(--mono);font-size:.62rem;font-weight:700;letter-spacing:.08em;background:var(--mustard);color:var(--ink);padding:2px 6px}
+.stl-tab summary:hover{background:#13232b}
+.stl-ico{display:grid;place-items:center;width:26px;height:26px;background:var(--mustard);color:var(--ink);font-size:.9rem}
+.stl-list{list-style:none;margin:0;padding:0 10px 10px;display:grid;gap:8px}
+.stl-list li{padding-left:0}
+.stl-list li::before{display:none}
+.stl-list a{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:10px 12px;background:var(--cream);color:var(--ink);text-decoration:none;border:2px solid var(--ink);box-shadow:3px 3px 0 #000;transition:transform .12s,box-shadow .12s}
+.stl-list a:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--mustard)}
+.stl-list b{font-family:var(--display);font-weight:900;font-size:.85rem;text-transform:uppercase}
+.stl-list small{font-family:var(--mono);font-size:.68rem;color:#5a4c3e}
+.stl-list span{font-weight:900;color:var(--red)}
+
+/* apparitions */
+.js .rv{opacity:0;transform:translateY(34px) skewY(1.5deg);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+.js .rv.in{opacity:1;transform:none}
+
+/* responsive */
+@media (max-width:1100px){.carts{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:900px){
+  .hero-grid,.rush-grid,.retro-grid,.pack,.wx{grid-template-columns:minmax(0,1fr)}
+  .sides{grid-template-columns:minmax(0,1fr)}
+  .sheet{grid-template-columns:minmax(0,1fr)}
+  .specs{grid-template-columns:minmax(0,1fr)}
+  .side-tag{display:none}
+  .poster{max-width:460px;margin-inline:auto}
+  .nav-links{display:none}
+  .spot-grid,.products{grid-template-columns:minmax(0,1fr)}
+  .cine::before{background:linear-gradient(0deg,rgba(8,18,24,.95) 0%,rgba(8,18,24,.6) 55%,rgba(8,18,24,.15)),repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 1px,transparent 1px 3px)}
+  .cine .wrap{justify-content:flex-end}
+  .photo{max-width:420px;margin-inline:auto}
+}
+@media (max-width:760px){
+  .carts{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .side{grid-template-columns:minmax(0,1fr)}
+  .shot{max-width:180px}
+}
+@media (max-width:560px){
+  .hero{margin:8px;padding-block:30px 240px}
+  .sea{height:240px} .sun{bottom:240px}
+  .carts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cart.finale{flex-direction:column;align-items:flex-start;gap:6px}
+  .specs div{grid-template-columns:minmax(0,1fr);gap:2px}
+  .tc .f b{font-size:1.5rem;padding:2px 5px}
+  .key{min-width:0;flex:1;padding-inline:6px}
+  .sec{padding-block:70px}
+  .icons{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .burst{right:-8px;width:104px;font-size:2rem}
+  .nav-logo b{display:none}
+  .crt-tv{padding:12px 12px 50px;border-radius:20px}
+  .cine .snd{right:12px;bottom:30px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .band-track,.water,.stars i,.stars svg,.planet,.tv,.leds i,.rush::before,.burst,.burst span,.box-shot,.cloud-deco{animation:none}
+  .cloud{animation-play-state:paused}
+  .knob,.btn,.cart{transition:none}
+  .js .rv{opacity:1;transform:none;transition:none}
+}
+</style>
+</head>
+<body>
+<div class="cityscape" aria-hidden="true"><svg id="city" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMax slice"></svg><canvas id="snow"></canvas></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="cl0" viewBox="0 0 220 90">
+      <path fill="#7FA9BC" d="M14 84c-12 0-14-16-2-20 0-16 18-22 28-14 4-18 30-22 38-6 8-22 46-22 52 2 12-10 34-4 34 12 14-4 26 6 22 18 10 2 10 8 0 8z"/>
+      <path fill="#F6EBDC" d="M16 76c-10 0-11-13-1-16 0-14 16-19 25-12 4-16 27-20 35-5 7-20 41-20 47 2 11-9 30-4 30 11 12-3 23 5 20 15z"/>
+      <path fill="none" stroke="#C9D9DF" stroke-width="3" stroke-linecap="round" d="M48 62c6-4 12-4 16 0M108 58c8-6 18-5 22 2"/>
+    </symbol>
+    <symbol id="cl1" viewBox="0 0 220 90">
+      <path fill="#7FA9BC" d="M8 86c-6-10 2-20 14-18 2-20 26-28 40-14 8-26 50-28 60-4 10-12 34-10 38 8 16-6 30 6 26 20 12 2 14 8 4 8z"/>
+      <path fill="#F6EBDC" d="M10 78c-5-9 2-17 13-15 2-18 24-25 37-12 7-24 46-26 55-4 9-11 31-9 35 7 15-5 27 6 24 18 z"/>
+      <path fill="none" stroke="#C9D9DF" stroke-width="3" stroke-linecap="round" d="M70 52c8-6 18-6 24 0M150 66c6-4 14-3 18 2"/>
+    </symbol>
+    <symbol id="cl2" viewBox="0 0 220 90">
+      <path fill="#7FA9BC" d="M30 86c-14 0-14-14-2-16 2-10 14-14 22-8 6-14 26-14 32-2 10-10 28-6 30 6 14-14 40-8 40 10 14-2 22 8 16 18z"/>
+      <path fill="#F6EBDC" d="M32 78c-12 0-12-12-2-14 2-9 13-12 20-7 6-12 24-12 29-2 9-9 25-5 27 5 13-12 36-7 36 9 13-2 20 7 15 15z"/>
+    </symbol>
+    <symbol id="spark" viewBox="0 0 20 20"><path d="M10 0 L12 8 L20 10 L12 12 L10 20 L8 12 L0 10 L8 8 Z"/></symbol>
+  </defs>
+</svg>
+
+<nav class="top-nav" aria-label="Navigation principale">
+  <div class="wrap">
+    <a class="nav-logo" href="#top"><img src="logo.webp" alt="Calendar Game by Parchap" width="1200" height="810"><b>CG-01</b></a>
+    <div class="nav-links">
+      <a href="#spot">Le spot</a>
+      <a href="#faces">Les 2 faces</a>
+      <a href="#jeux">25 jeux</a>
+      <a href="#jaquette">La boîte</a>
+      <a href="#specs">Fiche tech</a>
+    </div>
+    <a class="btn primary nav-cta" href="#boutique">Boutique</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <span class="corner l" aria-hidden="true"></span><span class="corner r" aria-hidden="true"></span>
+  <div class="stars" id="stars" aria-hidden="true"></div>
+  <div class="planet" aria-hidden="true"></div>
+  <span class="moon m1" aria-hidden="true"></span><span class="moon m2" aria-hidden="true"></span>
+  <div class="giant" aria-hidden="true">25</div>
+  <div class="sun" aria-hidden="true"></div>
+  <div class="sea" aria-hidden="true">
+    <div class="haze"></div>
+    <div class="water-wrap"><div class="water"></div></div>
+    <div class="clouds" id="clouds"></div>
+  </div>
+  <p class="tag side-tag l" aria-hidden="true">CG-01 // CALENDAR GAME // ÉDITION NOËL 2026</p>
+  <p class="tag side-tag r" aria-hidden="true">ESP32 · 2,8" · 240×320 · WIFI · 25 JEUX</p>
+
+  <div class="wrap hero-grid">
+    <div>
+      <p class="tag label"><b>CG-01</b>DU 1ER AU 25 DÉCEMBRE</p>
+      <h1><img class="logo-img" src="logo.webp" alt="Calendar Game by Parchap" width="1200" height="810"></h1>
+      <p class="kicker">Rembobine décembre !</p>
+      <p class="lede">Une mini-télé rétro qui tient dans la main. Toute l'année, c'est ton agenda tactile et la météo de la semaine. Du 1<sup>er</sup> au 25 décembre, c'est un calendrier de l'Avent&nbsp;: chaque matin, une porte s'ouvre sur un jeu d'arcade des années&nbsp;80.</p>
+      <div class="circuits" aria-label="Compte à rebours jusqu'au prochain calendrier de l'Avent">
+        <div class="tc red" id="tc-dest"></div>
+        <div class="tc green" id="tc-now"></div>
+        <div class="tc amber" id="tc-last"></div>
+      </div>
+      <div class="ctas">
+        <a class="btn primary" href="#jeux">Voir les 25 jeux</a>
+        <a class="btn ghost" href="#jaquette">La jaquette</a>
+      </div>
+    </div>
+    <div class="tv-col" id="tv-col">
+      <div class="tv">
+        <div class="tv-top" aria-hidden="true"></div>
+        <div class="tv-body">
+          <span class="screw a" aria-hidden="true"></span><span class="screw b" aria-hidden="true"></span><span class="screw c" aria-hidden="true"></span><span class="screw d" aria-hidden="true"></span>
+          <div class="tv-bezel"><div class="crt"><canvas id="scr" width="240" height="320" tabindex="0" aria-label="Écran Calendar Game, 240 par 320 pixels, le même que la carte. Touchez l'écran ou utilisez les flèches du clavier."></canvas></div></div>
+          <div class="tv-side">
+            <div class="tv-chan" id="chan">CH 01</div>
+            <button class="knob" id="knob" type="button" aria-label="Changer de chaîne"></button>
+            <div class="leds" aria-hidden="true"><i></i><i></i></div>
+            <div class="grille" aria-hidden="true"></div>
+            <span class="tv-brand" aria-hidden="true">PARCHAP</span>
+          </div>
+        </div>
+      </div>
+      <div class="deck" role="group" aria-label="Choisir l'écran">
+        <button class="key" type="button" data-go="cal" aria-pressed="true"><span class="sym">▦</span>CAL</button>
+        <button class="key" type="button" data-go="meteo" aria-pressed="false"><span class="sym">☀</span>Météo</button>
+        <button class="key" type="button" data-go="jeu" aria-pressed="false"><span class="sym">★</span>JEU</button>
+        <button class="key" type="button" data-go="set" aria-pressed="false"><span class="sym">⚙</span>Régl</button>
+      </div>
+      <p class="hint"><b>Le même écran que la carte, 240&nbsp;×&nbsp;320.</b> Glisse le doigt sur l'écran. Dans JEU, un appui long sur le titre ouvre le mode test&nbsp;: toutes les portes, comme sur la carte.</p>
+    </div>
+  </div>
+</header>
+
+<div class="tapes-band" aria-hidden="true">
+  <div class="band one"><div class="band-track" id="band1"></div></div>
+  <div class="band two"><div class="band-track" id="band2"></div></div>
+</div>
+
+<main>
+  <section class="sec spot" id="spot">
+    <div class="wrap spot-grid">
+      <div class="crt-tv rv">
+        <div class="glass">
+          <video id="vid-spot" data-auto data-sound-on muted loop playsinline preload="metadata" poster="video/spot-tv.webp" aria-label="Spot publicitaire Calendar Game">
+            <source src="video/spot-tv.mp4" type="video/mp4">
+          </video>
+          <span class="osd l" aria-hidden="true">REC</span>
+          <span class="osd r" aria-hidden="true">CH 25 · SPOT TV</span>
+        </div>
+        <div class="crt-foot">
+          <span class="brand" aria-hidden="true">PARCHAP</span>
+          <span class="dials" aria-hidden="true"><i></i><i></i></span>
+          <button class="snd" type="button" data-sound="vid-spot" aria-pressed="true">♪ SON ON</button>
+        </div>
+      </div>
+      <div class="rv">
+        <p class="tag">00 // Le spot TV</p>
+        <h2 style="margin-top:12px">1 seul écran.<span>2 vies.</span></h2>
+        <p class="txt">Agenda et météo toute l'année, salle d'arcade en décembre. Une console qu'on ne range jamais au placard.</p>
+        <div class="ctas"><a class="btn primary" href="#boutique">Je la veux</a><a class="btn ghost" href="#faces">Comment ça marche</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="faces">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <p class="tag">01 // Deux faces, comme une cassette</p>
+        <h2>Face A pour l'année. <em>Face B pour Noël.</em></h2>
+        <p>Le même petit écran change de rôle avec le calendrier. Pas besoin de le ranger en janvier&nbsp;: il retourne simplement la cassette.</p>
+      </div>
+      <div class="sides">
+        <article class="side a rv">
+          <div>
+            <p class="tag">Face A · janv. → déc. · 365 j</p>
+            <h3>L'agenda et la météo</h3>
+            <ul>
+              <li>Anniversaires, rendez-vous, sorties&nbsp;: le mois entier en un coup d'œil, avec la météo de chaque jour.</li>
+              <li>Une note par jour, tapée sur le clavier de l'écran, avec cinq thèmes.</li>
+              <li>L'heure et la météo se mettent à jour toutes seules par le Wi-Fi. Plus jamais d'horloge qui clignote 12:00.</li>
+            </ul>
+          </div>
+          <div class="shot"><img src="docs/calendrier.png" alt="Écran du calendrier d'octobre avec la météo de chaque jour" width="480" height="640" loading="lazy"></div>
+        </article>
+        <article class="side b rv">
+          <div>
+            <p class="tag">Face B · 1<sup>er</sup> → 25 déc. · 25 j</p>
+            <h3>Le calendrier de l'Avent</h3>
+            <ul>
+              <li>Une porte par jour. Derrière, un jeu d'arcade complet, jouable au doigt.</li>
+              <li>Les portes suivantes restent fermées jusqu'à leur date&nbsp;: pas de triche, même en secouant la boîte.</li>
+              <li>Le 25, le Championnat enchaîne quatre épreuves pour la finale.</li>
+            </ul>
+          </div>
+          <div class="shot"><img src="docs/fenetre_cadeau.png" alt="Fenêtre cadeau du 9 décembre avec le bouton Jouer" width="480" height="640" loading="lazy"></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec rush">
+    <div class="wrap rush-grid">
+      <div class="poster rv">
+        <img src="img/heroine.webp" alt="L'héroïne de Calendar Game, blouson rouge, tient la console devant une fusée" width="1000" height="1704" loading="lazy">
+        <div class="burst" aria-hidden="true"><span>25<small>JEUX&nbsp;!</small></span></div>
+        <p class="tag">Pilote 01 · prête au décollage</p>
+      </div>
+      <div class="rv">
+        <p class="tag">02 // Le frisson d'autrefois</p>
+        <h2><span>25 jours.</span><span>25 jeux.</span><span>1 légende&nbsp;!</span></h2>
+        <p class="brush">Le frisson d'autrefois, encore une fois.</p>
+        <p class="txt">Casse-briques, tir spatial, course, labyrinthe, zombies… Chaque matin de décembre, un nouveau jeu d'arcade façon années&nbsp;80, avec son record enregistré dans la console.</p>
+        <div class="stats">
+          <div class="stat"><b>25</b><small>jeux d'arcade</small></div>
+          <div class="stat"><b>7 j</b><small>de météo</small></div>
+          <div class="stat"><b>8 bits</b><small>sons et musique</small></div>
+          <div class="stat"><b>2,8"</b><small>écran tactile</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cine" aria-label="Spot de Noël">
+    <video id="vid-noel" data-auto muted loop playsinline preload="metadata" poster="video/noel.webp" aria-hidden="true">
+      <source src="video/noel.mp4" type="video/mp4">
+    </video>
+    <div class="wrap">
+      <p class="tag">Spot Noël 2026 // sous le sapin</p>
+      <h2 class="rv">Le cadeau qui s'ouvre <em>25 fois.</em></h2>
+      <p class="brush rv">Un jeu par matin, jusqu'au 25 décembre.</p>
+      <div class="ctas rv"><a class="btn primary" href="#boutique">Offrir Calendar Game</a><a class="btn ghost" href="#jeux">Voir les 25 jeux</a></div>
+    </div>
+    <button class="snd" type="button" data-sound="vid-noel" aria-pressed="false">♪ SON OFF</button>
+  </section>
+
+  <section class="sec meteo on-dark" id="meteo">
+    <svg class="cloud-deco c1" viewBox="0 0 220 90" aria-hidden="true"><use href="#cl1"/></svg>
+    <svg class="cloud-deco c2" viewBox="0 0 220 90" aria-hidden="true"><use href="#cl0"/></svg>
+    <div class="wrap wx">
+      <div class="wx-copy rv">
+        <div class="sec-head" style="margin-bottom:0">
+          <p class="tag">03 // Piste bonus : la météo</p>
+          <h2>La météo de la semaine, <em>comme au journal de 20&nbsp;h.</em></h2>
+          <p>Choisis ta ville une fois. Ensuite, Calendar Game va chercher tout seul, par le Wi-Fi, les prévisions de Météo-France et affiche les 7 prochains jours.</p>
+        </div>
+        <ul class="wx-list">
+          <li>7 jours d'un coup d'œil, avec le temps prévu pour chaque jour.</li>
+          <li>Les températures mini et maxi de ta ville.</li>
+          <li>Mise à jour automatique par Wi-Fi&nbsp;: rien à régler, rien à recharger.</li>
+        </ul>
+        <div class="wx-cities" id="wx-cities" role="group" aria-label="Choisir une ville"></div>
+        <p class="wx-note">Choisis une ville&nbsp;: le tableau et la console changent de chaîne. Températures d'exemple sur cette page&nbsp;; sur l'appareil, ce sont les prévisions Météo-France du jour.</p>
+      </div>
+      <div class="wx-board rv" id="wx-board" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="sec jeux" id="jeux">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <p class="tag">04 // Le programme du mois</p>
+        <h2>25 portes, <em>25 cartouches.</em></h2>
+        <p>Chaque jeu est celui de la carte&nbsp;: même titre, mêmes commandes, écran 240&nbsp;×&nbsp;320. Touche une cartouche pour l'ouvrir dans la console. Le jour 1 est jouable tout de suite. Les autres portes s'ouvrent à leur date en décembre, ou toutes ensemble avec le mode test.</p>
+      </div>
+      <div class="carts" id="carts"></div>
+    </div>
+  </section>
+
+  <section class="sec retro">
+    <div class="wrap retro-grid">
+      <div class="photo rv"><img src="img/retro.webp" alt="La console Calendar Game posée avec un skate, une guitare, une cassette et des baskets" width="800" height="1047" loading="lazy"></div>
+      <div class="rv">
+        <p class="tag" style="color:var(--petrol)">05 // Esprit années 80</p>
+        <h2>Pour ceux qui rembobinaient au crayon.</h2>
+        <p class="sub">Le cadeau qui parle à la fois aux enfants et à ceux qui ont grandi avec un walkman.</p>
+        <div class="icons">
+          <figure><span class="ic"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M18 60 L29 34 H35 L46 60 H40 L32 44 L24 60 Z"/><path d="M30 34 V9 H34 V34"/><path d="M29 9 L32 2 L35 9"/><path d="M27 42 H37"/></svg></span><figcaption>RIFF</figcaption></figure>
+          <figure><span class="ic"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M14 8 H28 V30 C28 34 32 36 38 37 L48 39 C53 40 56 43 56 47 V50 H14 Z"/><path d="M28 16 H22 M28 22 H22 M28 28 H22"/><circle cx="21" cy="56" r="5"/><circle cx="47" cy="56" r="5"/></svg></span><figcaption>ROULE</figcaption></figure>
+          <figure><span class="ic"><svg viewBox="0 0 64 64" aria-hidden="true"><g transform="rotate(-14 32 36)"><path d="M4 30 Q7 38 14 38 H50 Q57 38 60 30"/><path d="M16 38 L16 43 M48 38 L48 43"/><circle cx="16" cy="47" r="4"/><circle cx="48" cy="47" r="4"/></g><path d="M12 18 L20 14 M8 24 L14 22"/></svg></span><figcaption>RIDE</figcaption></figure>
+          <figure><span class="ic"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="5" y="13" width="54" height="38" rx="4"/><rect x="12" y="19" width="40" height="15" rx="2"/><circle cx="22" cy="26.5" r="4"/><circle cx="42" cy="26.5" r="4"/><path d="M16 51 L20 42 H44 L48 51"/></svg></span><figcaption>REMBOBINE</figcaption></figure>
+          <figure><span class="ic"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="20" width="52" height="36" rx="6"/><rect x="12" y="25" width="32" height="26" rx="5"/><circle cx="51" cy="31" r="2.5"/><circle cx="51" cy="41" r="2.5"/><path d="M32 20 L22 6 M32 20 L42 6"/></svg></span><figcaption>RALLUME</figcaption></figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec pack-sec on-dark" id="jaquette">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <p class="tag">06 // La jaquette</p>
+        <h2>Une boîte qu'on garde <em>sur l'étagère.</em></h2>
+        <p>Face avec l'illustration, le logo et la console. Dos avec les 25 jeux en vraies captures d'écran.</p>
+      </div>
+      <div class="pack">
+        <div class="box-shot rv"><img src="img/boite.webp" alt="La boîte Calendar Game en trois dimensions, face et tranche rouge" width="900" height="1310" loading="lazy"></div>
+        <div class="pack-copy rv">
+          <dl>
+            <dt>FORMAT</dt><dd>Boîte carton 14 × 20 × 6&nbsp;cm.</dd>
+            <dt>FACE</dt><dd>Illustration, logo Calendar Game, la console et la mention «&nbsp;25 jeux rétro, 1 par jour&nbsp;».</dd>
+            <dt>DOS</dt><dd>Les 25 jeux en miniatures, avec la liste des titres.</dd>
+            <dt>TRANCHES</dt><dd>Le nom Calendar Game, lisible quand la boîte est rangée debout.</dd>
+          </dl>
+          <a class="free-dl" href="visuels/jaquette-decoupe.png" download>
+            <span class="free-burst" aria-hidden="true"><span>GRATUIT&nbsp;!!</span></span>
+            <span class="free-txt"><b>La jaquette à imprimer</b><small>Avec les traits de découpe · PNG 5,6 Mo</small></span>
+            <span class="free-arrow" aria-hidden="true">⬇</span>
+          </a>
+          <a class="flat" href="visuels/jaquette.webp" target="_blank" rel="noopener"><img src="visuels/jaquette.webp" alt="Jaquette Calendar Game à plat, face et dos" width="1600" height="1364" loading="lazy"></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec shop" id="boutique">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <p class="tag">07 // La boutique</p>
+        <h2>Fabrique ta console, <em>joue dès ce soir.</em></h2>
+        <p>Le programme et le boîtier sont vendus en fichiers numériques&nbsp;: tu installes le programme sur la carte ESP32 2,8" et tu imprimes le boîtier en 3D.</p>
+      </div>
+      <div class="products">
+        <article class="product rv" data-ghost="CODE" style="--c:var(--red)">
+          <span class="badge">FICHIER NUMÉRIQUE</span>
+          <div class="head">
+            <h3>Le programme + les 25 jeux</h3>
+            <p class="ref">RÉF. CG-SOFT-2026 // MICROPYTHON</p>
+          </div>
+          <ul>
+            <li>Le programme complet pour la carte E32R28T (ESP32, écran tactile 2,8")&nbsp;: agenda, notes, météo 7 jours, écran de veille.</li>
+            <li>Les 25 jeux d'arcade du calendrier de l'Avent, avec les records enregistrés sur la carte.</li>
+            <li>Le firmware maison prêt à installer, qui laisse assez de mémoire pour le Wi-Fi.</li>
+            <li>Le guide d'installation pas à pas, de Python au premier démarrage.</li>
+          </ul>
+          <div class="foot">
+            <p class="price"><span data-price="soft">19,00</span>&nbsp;€<small>TTC</small></p>
+            <span class="buy-row"><a class="btn ghost gh" href="https://github.com/Dipa0102/CALENDAR-GAME" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a><a class="btn primary" data-buy="soft" target="_blank" rel="noopener">Acheter</a></span>
+          </div>
+        </article>
+        <article class="product rv" data-ghost="3D" style="--c:var(--petrol-l)">
+          <span class="badge">À IMPRIMER EN 3D</span>
+          <div class="head">
+            <h3><a class="plink" href="montage.html">Les fichiers du boîtier</a></h3>
+            <p class="ref">RÉF. CG-STL-CASE // FICHIERS STL</p>
+          </div>
+          <ul>
+            <li>Les pièces du boîtier en fichiers STL, prêtes à imprimer.</li>
+            <li>Conçu pour la carte E32R28T 2,8" et sa batterie.</li>
+            <li>Le look de la mini-télé rétro de Calendar Game.</li>
+            <li><a class="plink" href="montage.html">Notice de raccordement</a> : haut-parleur, batterie, USB, sans soudure.</li>
+          </ul>
+          <details class="stl-tab">
+            <summary><span class="stl-ico" aria-hidden="true">⬇</span>Télécharger les fichiers STL<small>2 fichiers</small></summary>
+            <ul class="stl-list">
+              <li><a href="stl/calendar-game-boitier-haut.stl" download><b>Boîtier · partie haute</b><small>STL · 2,7 Mo</small><span aria-hidden="true">⬇</span></a></li>
+              <li><a href="stl/calendar-game-boitier-bas.stl" download><b>Boîtier · partie basse</b><small>STL · 4,9 Mo</small><span aria-hidden="true">⬇</span></a></li>
+            </ul>
+          </details>
+          <div class="foot">
+            <p class="price"><span data-price="print">14,00</span>&nbsp;€<small>TTC</small></p>
+            <span class="buy-row"><a class="btn ghost" href="montage.html">Le montage</a><a class="btn primary" data-buy="print" target="_blank" rel="noopener">Acheter</a></span>
+          </div>
+        </article>
+      </div>
+      <p class="shop-note rv">Paiement sécurisé par Stripe. Le lien de téléchargement arrive par e-mail après l'achat.</p>
+    </div>
+  </section>
+
+  <section class="sec specs-sec" id="specs">
+    <div class="huge" aria-hidden="true">CG-01</div>
+    <div class="wrap sheet">
+      <div class="rv">
+        <p class="tag">08 // Fiche technique</p>
+        <h2>Sous le capot</h2>
+        <dl class="specs">
+          <div><dt>Cerveau</dt><dd>ESP32 double cœur, 240&nbsp;MHz</dd></div>
+          <div><dt>Écran</dt><dd>TFT couleur 2,8", 240 × 320&nbsp;px, tactile</dd></div>
+          <div><dt>Connexions</dt><dd>Wi-Fi 2,4&nbsp;GHz et Bluetooth</dd></div>
+          <div><dt>Jeux</dt><dd>25, un par jour du 1<sup>er</sup> au 25 décembre</dd></div>
+          <div><dt>Alimentation</dt><dd>USB-C 5&nbsp;V, batterie rechargeable</dd></div>
+          <div><dt>Météo</dt><dd>Prévisions Météo-France sur 7 jours, mini et maxi</dd></div>
+          <div><dt>Son</dt><dd>Bruitages 8 bits et musique de la salle d'arcade</dd></div>
+          <div><dt>Programme</dt><dd>MicroPython, 25 jeux au doigt</dd></div>
+        </dl>
+      </div>
+      <div class="idcard rv" aria-hidden="true">
+        <span>RÉF. PRODUIT</span>
+        <b>CG-01</b>
+        <span>CALENDAR GAME<br>ÉDITION NOËL 2026<br>BY PARCHAP</span>
+        <div class="bars"></div>
+        <span>STATUT : <span class="ok">● PRÊT À JOUER</span></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec final">
+    <div class="stars" id="stars2" aria-hidden="true"></div>
+    <div class="sun" aria-hidden="true"></div>
+    <div class="final-clouds" aria-hidden="true">
+      <svg viewBox="0 0 220 90" style="left:-2%;width:30%"><use href="#cl0"/></svg>
+      <svg viewBox="0 0 220 90" style="left:24%;width:22%;bottom:5%"><use href="#cl2"/></svg>
+      <svg viewBox="0 0 220 90" style="right:20%;width:24%;bottom:2%"><use href="#cl1"/></svg>
+      <svg viewBox="0 0 220 90" style="right:-3%;width:30%;bottom:28%"><use href="#cl2"/></svg>
+    </div>
+    <div class="wrap">
+      <p class="tag" id="final-eyebrow">DESTINATION&nbsp;: 1<sup>er</sup> DÉCEMBRE</p>
+      <h2 style="margin-top:12px">La première porte s'ouvre <span>à minuit pile.</span></h2>
+      <div class="countdown" id="countdown" aria-live="off">
+        <div class="f"><b data-c="d">00</b><small>JOURS</small></div>
+        <div class="f"><b data-c="h">00</b><small>HEURES</small></div>
+        <div class="f"><b data-c="m">00</b><small>MIN</small></div>
+        <div class="f"><b data-c="s">00</b><small>SEC</small></div>
+      </div>
+      <div class="ctas">
+        <a class="btn primary" href="#boutique">Précommander</a>
+        <a class="btn ghost" href="#jeux">Revoir les jeux</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><a class="nav-logo" href="#top"><img class="footer-logo" src="logo.webp" alt="Calendar Game by Parchap" width="1200" height="810" loading="lazy"></a><span>Même programme que la carte&nbsp;: vues 240&nbsp;×&nbsp;320 et les 25 jeux. Le jour 1 est ouvert toute l'année.</span></div>
+</footer>
+
+<script src="ecran.js"></script>
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+document.documentElement.classList.add('js');
+const GAMES = [
+ [1,'Magic Harry','Casse-briques magique','Glisse la raquette'],
+ [2,'Star Raid','Tir vertical, le vaisseau suit le doigt','Glisse, il tire tout seul'],
+ [3,'Serpent 80','Le serpent part vers le doigt','Pose le doigt'],
+ [4,'Ping 80','Duel de raquettes, premier à 7','Glisse pour renvoyer'],
+ [5,'Envahisseurs','Un missile à la fois, les abris s\'effritent','Glisse, doigt posé : tir'],
+ [6,'Rochers 80','Le vaisseau reste au centre et vise avec le doigt','Vise, doigt posé : tir'],
+ [7,'Route 80','Traverser deux routes sans se faire écraser','Au-dessus avance, en dessous recule'],
+ [8,'Bomb Dodge','Esquiver les bombes, ramasser les pièces','Glisse le doigt'],
+ [9,'Turbo 80','Course vue de dessus, doubler sans toucher','Glisse pour changer de file'],
+ [10,'Hélico 80','Doigt posé, il monte ; doigt levé, il descend','Maintenir / relâcher'],
+ [11,'Paires 80','Retrouver les paires avant la fin du temps','Touche deux cartes'],
+ [12,'Blocs 80','Empiler les pièces pour compléter des lignes','Boutons tourne et bas'],
+ [13,'Cibles 80','Toucher les oiseaux, trois tirs chacun','Touche l\'oiseau'],
+ [14,'Défenseur','Protéger les humains des envahisseurs','Suis le doigt et tire'],
+ [15,'Mineur 80','Creuser vers le doigt, diamants, puis la sortie','Garde le doigt'],
+ [16,'Alunissage','Moteur vers le haut et vers le doigt','Doigt posé : moteur'],
+ [17,'Sauteur 80','Rebondir de barre en barre, le doigt dirige','Le doigt dirige'],
+ [18,'Fire Escape','Rattraper les sauteurs avec le trampoline','Doigt : tremplin'],
+ [19,'Zombie Night','Tirer sur les zombies, viser la tête','Touche pour tirer'],
+ [20,'Labyrinthe','La bille suit le doigt jusqu\'à la sortie','Glisse dans les couloirs'],
+ [21,'Crystal Catch','Attraper les cristaux, éviter les bombes','Glisse le chaudron'],
+ [22,'Réaction 80','Toucher la case qui s\'allume, pas la blanche','Touche la case'],
+ [23,'Aiguillages','Envoyer chaque train vers la gare de sa couleur','Touche un aiguillage'],
+ [24,'Boss Rush','Quatre boss, le vaisseau suit le doigt','Glisse, il tire tout seul'],
+ [25,'Championnat','Quatre épreuves : course, saut, tir, haies','Gauche, droite, saut'],
+].map(([d,n,p,c]) => ({d,n,p,c}));
+function doorOpen(d) {
+  if (window.Screen && Screen.test && Screen.test()) return true;
+  if (window.Screen && Screen.unlocked) return Screen.unlocked(d);
+  const n = new Date();
+  return d === 1 || (n.getMonth() === 11 && n.getDate() >= d && d <= 25);
+}
+const CSSPAL = ['var(--red)','var(--petrol-l)','var(--mustard)','var(--orange)','var(--cream)'];
+const MO = ['JAN','FEV','MAR','AVR','MAI','JUN','JUL','AOU','SEP','OCT','NOV','DEC'];
+const pad = (n,l=2) => String(n).padStart(l,'0');
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- aléatoire stable ---------- */
+let seed = 7;
+const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+/* ---------- ciel étoilé ---------- */
+function stars(el, n, sparks) {
+  let h = '';
+  for (let i = 0; i < n; i++) h += '<i class="'+(rnd()<.2?'b':'')+'" style="left:'+(rnd()*100).toFixed(2)+'%;top:'+(rnd()*100).toFixed(2)+'%;animation-delay:-'+(rnd()*3).toFixed(2)+'s"></i>';
+  for (let i = 0; i < sparks; i++) h += '<svg style="left:'+(5+rnd()*90).toFixed(2)+'%;top:'+(rnd()*80).toFixed(2)+'%;animation-delay:-'+(rnd()*2.4).toFixed(2)+'s;transform:scale('+(.6+rnd()*.7).toFixed(2)+')"><use href="#spark"/></svg>';
+  el.innerHTML = h;
+}
+stars($('#stars'), 70, 6);
+stars($('#stars2'), 50, 4);
+
+/* ---------- mer de nuages qui avance ---------- */
+function clouds() {
+  const box = $('#clouds'), W = box.clientWidth, N = W < 700 ? 9 : 15, D = 18;
+  let h = '';
+  for (let i = 0; i < N; i++) {
+    const side = i % 2 ? 1 : -1;
+    const x = side * (0.08 + rnd() * 0.62) * Math.max(W, 600) * 1.3;
+    const y = 30 + rnd() * 70;
+    const w = 180 + rnd() * 180;
+    const delay = reduced ? 0 : -(i / N) * D - rnd() * 0.8;
+    const style = '--x:'+x.toFixed(0)+'px;--y:'+y.toFixed(0)+'px;--w:'+w.toFixed(0)+'px;--d:'+D+'s;animation-delay:'+delay.toFixed(2)+'s';
+    h += '<div class="cloud" style="'+style+'"><svg viewBox="0 0 220 90"><use href="#cl'+(i%3)+'"/></svg></div>';
+  }
+  box.innerHTML = h;
+  if (reduced) box.querySelectorAll('.cloud').forEach((c, i) => { c.style.animationDelay = -(i / N) * D + 's'; });
+}
+clouds();
+
+/* ---------- fond : ville de Noël sous la neige ---------- */
+(function cityscape() {
+  const svg = document.getElementById('city'); if (!svg) return;
+  let sd = 42; const r = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+  const pick = a => a[(r() * a.length) | 0];
+  const WIN = ['#F2B705', '#FFB27A', '#7FC4DA', '#F6EBDC', '#F2B705'];
+  const NEON = ['#FF4A3D', '#F2B705', '#3FC3E0'];
+  const WORDS = ['NOËL', 'ARCADE', 'JEUX', '25', 'HIVER', 'RÉTRO', 'CADEAU', '8 BIT'];
+  const P = [];
+  P.push(`<defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#050A0E"/><stop offset=".45" stop-color="#0E1E28"/><stop offset=".72" stop-color="#1D2C3A"/><stop offset=".8" stop-color="#4A2836"/></linearGradient>
+    <linearGradient id="snowG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34454F"/><stop offset=".45" stop-color="#7F95A0"/><stop offset="1" stop-color="#C9D5DA"/></linearGradient>
+    <linearGradient id="shopY" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE08A"/><stop offset="1" stop-color="#E8622C"/></linearGradient>
+    <linearGradient id="shopR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF9A85"/><stop offset="1" stop-color="#A9241D"/></linearGradient>
+    <radialGradient id="poolY"><stop offset="0" stop-color="#F2B705" stop-opacity=".55"/><stop offset="1" stop-color="#F2B705" stop-opacity="0"/></radialGradient>
+    <radialGradient id="poolR"><stop offset="0" stop-color="#FF4A3D" stop-opacity=".5"/><stop offset="1" stop-color="#FF4A3D" stop-opacity="0"/></radialGradient>
+    <radialGradient id="moonG"><stop offset=".55" stop-color="#F6EBDC" stop-opacity=".35"/><stop offset="1" stop-color="#F6EBDC" stop-opacity="0"/></radialGradient>
+    <filter id="neon" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <mask id="moonCut"><rect x="900" y="0" width="500" height="400" fill="#fff"/>
+      <rect x="900" y="232" width="500" height="7" fill="#000"/><rect x="900" y="250" width="500" height="9" fill="#000"/><rect x="900" y="270" width="500" height="11" fill="#000"/></mask>
+  </defs>`);
+  // ciel, étoiles, lune rayée
+  P.push('<rect width="1600" height="1000" fill="url(#sky)"/>');
+  for (let i = 0; i < 140; i++) P.push(`<circle cx="${(r()*1600).toFixed(0)}" cy="${(r()*520).toFixed(0)}" r="${(.6+r()*1.4).toFixed(1)}" fill="#F6EBDC" opacity="${(.3+r()*.7).toFixed(2)}"${r()<.25 ? ` class="tw tw${i%3}"` : ''}/>`);
+  P.push('<circle cx="1160" cy="200" r="170" fill="url(#moonG)"/>');
+  P.push('<g mask="url(#moonCut)"><circle cx="1160" cy="200" r="96" fill="#F6EBDC"/><circle cx="1128" cy="170" r="16" fill="#D9CDBA" opacity=".6"/><circle cx="1190" cy="225" r="10" fill="#D9CDBA" opacity=".6"/><circle cx="1185" cy="150" r="7" fill="#D9CDBA" opacity=".6"/></g>');
+  // traîneau du père Noël
+  let deer = '';
+  for (let k = 0; k < 3; k++) {
+    const x = 150 + k * 46;
+    deer += `<g transform="translate(${x} ${k%2 ? 3 : 0})"><ellipse cx="20" cy="20" rx="15" ry="6.5"/><path d="M32 17 L40 6 L45 7 L41 17 Z"/><path d="M41 6 l-2-8 M41 4 l4-6 M43 6 l5-5" stroke="#0A0F13" stroke-width="1.6" fill="none"/>
+      <path d="M10 24 l-7 9 M15 25 l-3 10 M27 24 l5 9 M30 23 l9 6" stroke="#0A0F13" stroke-width="2.2" fill="none" stroke-linecap="round"/></g>`;
+  }
+  P.push(`<g class="sleigh"><g transform="scale(1.15)">
+    <g fill="#F2B705" opacity=".8"><circle cx="-30" cy="40" r="1.6"/><circle cx="-60" cy="44" r="1.2"/><circle cx="-95" cy="49" r="1.6"/><circle cx="-130" cy="55" r="1"/><circle cx="-165" cy="60" r="1.4"/><circle cx="-210" cy="67" r="1"/></g>
+    <g fill="#0A0F13">${deer}</g>
+    <circle cx="289" cy="7" r="3.4" fill="#FF4A3D" filter="url(#neon)"/>
+    <path d="M150 26 L196 18" stroke="#0A0F13" stroke-width="1.2"/>
+    <path d="M0 28 h86 q16 0 18 -16 l6 -9 l5 3 l-7 13 q-5 22 -28 24 h-74 z" fill="#0A0F13"/>
+    <path d="M-6 44 h104 q12 0 14 -9" stroke="#0A0F13" stroke-width="3" fill="none"/>
+    <circle cx="30" cy="4" r="16" fill="#0A0F13"/><circle cx="62" cy="10" r="10" fill="#0A0F13"/><circle cx="62" cy="-4" r="7" fill="#0A0F13"/>
+    <path d="M56 -9 l8 -12 l6 10 z" fill="#0A0F13"/>
+  </g></g>`);
+  // couche lointaine
+  for (let x = -10; x < 1610;) {
+    const w = 34 + r()*60, ht = 140 + r()*230, y = 730 - ht;
+    P.push(`<rect x="${x.toFixed(0)}" y="${y.toFixed(0)}" width="${w.toFixed(0)}" height="${ht.toFixed(0)}" fill="#0F1C25"/><rect x="${(x-1).toFixed(0)}" y="${(y-3).toFixed(0)}" width="${(w+2).toFixed(0)}" height="4" rx="2" fill="#8FA4AE" opacity=".55"/>`);
+    if (r() < .3) P.push(`<path d="M${(x+w/2).toFixed(0)} ${y.toFixed(0)} v-${(14+r()*30).toFixed(0)}" stroke="#1E313C" stroke-width="2"/>`);
+    if (r() < .15) P.push(`<circle cx="${(x+w/2).toFixed(0)}" cy="${(y-30).toFixed(0)}" r="2" fill="#FF4A3D" class="blink"/>`);
+    for (let yy = y + 10; yy < 724; yy += 11) for (let xx = x + 5; xx < x + w - 5; xx += 8)
+      if (r() < .12) P.push(`<rect x="${xx.toFixed(0)}" y="${yy.toFixed(0)}" width="3" height="4" fill="${pick(WIN)}" opacity=".5"/>`);
+    x += w + 3;
+  }
+  // couche du milieu, avec enseignes verticales
+  for (let x = 250; x < 1340;) {
+    const w = 60 + r()*90, ht = 130 + r()*200, y = 810 - ht;
+    P.push(`<rect x="${x.toFixed(0)}" y="${y.toFixed(0)}" width="${w.toFixed(0)}" height="${ht.toFixed(0)}" fill="#14242E"/><rect x="${(x+w-9).toFixed(0)}" y="${y.toFixed(0)}" width="9" height="${ht.toFixed(0)}" fill="#0E1A21"/>`);
+    P.push(`<path d="M${(x-3).toFixed(0)} ${(y-5).toFixed(0)} h${(w+6).toFixed(0)} v7 q-8 6 -14 0 q-6 7 -13 0 q-9 5 -${(w-21).toFixed(0)} 0 z" fill="#E9EEF0"/>`);
+    for (let yy = y + 14; yy < 798; yy += 14) for (let xx = x + 7; xx < x + w - 14; xx += 13)
+      if (r() < .24) P.push(`<rect x="${xx.toFixed(0)}" y="${yy.toFixed(0)}" width="6" height="8" fill="${pick(WIN)}" opacity=".85"/>`);
+    if (r() < .45) {
+      const word = pick(WORDS), col = pick(NEON), sx = x + w - 6, sy = y + 18 + r()*30, hh = word.length * 14 + 12;
+      P.push(`<g filter="url(#neon)"><rect x="${sx.toFixed(0)}" y="${sy.toFixed(0)}" width="20" height="${hh}" fill="#120A0C" stroke="${col}" stroke-width="2"/>
+        <text x="${(sx+10).toFixed(0)}" y="${(sy+16).toFixed(0)}" font-family="JetBrains Mono, monospace" font-weight="700" font-size="12" fill="${col}" text-anchor="middle">${[...word].map((c,i)=>`<tspan x="${(sx+10).toFixed(0)}" dy="${i?14:0}">${c}</tspan>`).join('')}</text></g>`);
+    }
+    x += w + 8 + r()*12;
+  }
+  // sol enneigé et flaques de lumière
+  P.push('<path d="M0 800 H1600 V1000 H0 Z" fill="url(#snowG)"/>');
+  P.push('<ellipse cx="160" cy="960" rx="230" ry="60" fill="url(#poolY)"/><ellipse cx="1440" cy="950" rx="220" ry="55" fill="url(#poolR)"/><ellipse cx="800" cy="935" rx="260" ry="50" fill="url(#poolY)" opacity=".6"/>');
+  P.push('<g stroke="#8EA2AC" stroke-width="3" stroke-dasharray="2 9" fill="none" opacity=".7"><path d="M420 1000 Q560 900 760 870"/><path d="M1160 1000 Q1020 900 880 870"/></g>');
+  // guirlandes en travers de la place
+  const garland = (x1, y1, cx, cy, x2, y2) => {
+    P.push(`<path d="M${x1} ${y1} Q${cx} ${cy} ${x2} ${y2}" stroke="#05080A" stroke-width="1.6" fill="none"/>`);
+    const cols = ['#FF4A3D', '#F2B705', '#F6EBDC', '#3FC3E0'];
+    for (let i = 1; i < 44; i++) {
+      const t = i / 44, x = (1-t)*(1-t)*x1 + 2*(1-t)*t*cx + t*t*x2, y = (1-t)*(1-t)*y1 + 2*(1-t)*t*cy + t*t*y2;
+      P.push(`<circle cx="${x.toFixed(1)}" cy="${(y+4).toFixed(1)}" r="3" fill="${cols[i%4]}" class="tw tw${i%3}"/>`);
+    }
+  };
+  garland(330, 470, 800, 640, 1270, 440);
+  garland(330, 640, 800, 760, 1270, 620);
+  // sapin de la place
+  const tx = 800, tb = 930;
+  P.push(`<rect x="${tx-9}" y="${tb-26}" width="18" height="26" fill="#2A1A12"/>`);
+  [[150, 0, 70], [118, 62, 120], [86, 116, 170], [56, 164, 214]].forEach(([hw, dy, dh]) => {
+    const yb = tb - 20 - dy, yt = tb - 20 - dy - dh;
+    P.push(`<path d="M${tx-hw} ${yb} L${tx} ${yt} L${tx+hw} ${yb} Z" fill="#0E3A4C"/><path d="M${tx-hw} ${yb} q${hw/4} -10 ${hw/2} 0 q${hw/4} -10 ${hw/2} 0 q${hw/4} -10 ${hw/2} 0 q${hw/4} -10 ${hw/2} 0" fill="#E9EEF0"/>`);
+    for (let i = 0; i < 9; i++) {
+      const u = r(), yy = yb - 8 - u * (dh - 18), half = hw * (yb - yy) / dh;
+      const xx = tx - (hw - half) + r() * 2 * (hw - half) - 0;
+      const lx = Math.max(tx - (hw - (yb - yy) * hw / dh) + 6, Math.min(xx, tx + (hw - (yb - yy) * hw / dh) - 6));
+      P.push(`<circle cx="${lx.toFixed(0)}" cy="${yy.toFixed(0)}" r="3.4" fill="${pick(['#FF4A3D','#F2B705','#F6EBDC'])}" class="tw tw${i%3}"/>`);
+    }
+  });
+  P.push(`<path filter="url(#neon)" fill="#F2B705" d="M${tx} ${tb-418} l6 13 14 1 -11 9 4 14 -13 -8 -13 8 4 -14 -11 -9 14 -1 z"/>`);
+  [[-60, '#DB352B'], [-34, '#F2B705'], [30, '#2C8FA8'], [56, '#DB352B']].forEach(([dx, c], i) => {
+    const w = 20 + (i % 2) * 8, h = 16 + (i % 3) * 5;
+    P.push(`<rect x="${tx+dx-w/2}" y="${tb-h}" width="${w}" height="${h}" fill="${c}" stroke="#0A0B0C" stroke-width="1.2"/><path d="M${tx+dx} ${tb-h} v${h} M${tx+dx-w/2} ${tb-h+6} h${w}" stroke="#F6EBDC" stroke-width="2"/>`);
+  });
+  // passants
+  const person = (x, y, sc, hat) => P.push(`<g transform="translate(${x} ${y}) scale(${sc})"><ellipse cy="1" rx="9" ry="2.5" fill="#000" opacity=".3"/><path d="M-5 0 L-4.5 -18 Q0 -24 4.5 -18 L5 0 Z" fill="#0A1015"/><circle cy="-27" r="5" fill="#0A1015"/>${hat ? '<path d="M-5 -29 L2 -40 L5 -29 Z" fill="#DB352B"/><circle cx="2" cy="-40" r="1.8" fill="#F6EBDC"/>' : ''}</g>`);
+  person(560, 900, 1.3, true); person(590, 905, 1.2, false); person(1060, 880, 1.1, true); person(1100, 885, 1.05, false); person(470, 960, 1.6, false); person(1210, 975, 1.7, true); person(690, 860, .9, false);
+  // le père Noël offre la console à la fille
+  P.push(`<g transform="translate(955 968) scale(2.2)">
+    <ellipse cy="1" rx="34" ry="4" fill="#000" opacity=".3"/>
+    <g transform="translate(-14 0)">
+      <rect x="-10" y="-6" width="9" height="6" fill="#0A0B0C"/><rect x="1" y="-6" width="9" height="6" fill="#0A0B0C"/>
+      <path d="M-14 -6 Q-16 -46 0 -50 Q16 -46 14 -6 Z" fill="#DB352B" stroke="#0A0B0C" stroke-width=".8"/>
+      <rect x="-14" y="-10" width="28" height="4" fill="#F6EBDC"/><rect x="-1.5" y="-48" width="3" height="40" fill="#F6EBDC"/>
+      <rect x="-13.5" y="-29" width="27" height="4" fill="#0A0B0C"/><rect x="-3" y="-29.5" width="6" height="5" fill="none" stroke="#F2B705" stroke-width="1.2"/>
+      <circle cx="-17" cy="-32" r="10" fill="#B98A5A" stroke="#0A0B0C" stroke-width=".8"/><path d="M-21 -41 l4 -4 4 4" stroke="#0A0B0C" stroke-width="1" fill="none"/>
+      <circle cy="-56" r="7" fill="#F2C9A8"/><path d="M-8 -57 Q-7 -40 0 -38 Q7 -40 8 -57 Q4 -50 0 -51 Q-4 -50 -8 -57 Z" fill="#F6EBDC"/>
+      <path d="M-8 -60 Q-3 -74 11 -67 L8 -60 Z" fill="#DB352B"/><rect x="-9" y="-62" width="18" height="3.5" rx="1.5" fill="#F6EBDC"/><circle cx="12" cy="-67" r="2.6" fill="#F6EBDC"/>
+      <path d="M12 -36 Q19 -32 21 -27" stroke="#DB352B" stroke-width="5" stroke-linecap="round" fill="none"/>
+    </g>
+    <g transform="translate(9 -30)"><rect x="-1" y="-6" width="13" height="11" rx="1.5" fill="#1d1f22" stroke="#0A0B0C" stroke-width=".8"/><rect x="1" y="-4" width="7" height="7" fill="#3FC3E0" class="tw"/><circle cx="10" cy="2.5" r="1.2" fill="#DB352B"/></g>
+    <g transform="translate(26 0)">
+      <rect x="-5" y="-4" width="4" height="4" fill="#0A0B0C"/><rect x="1" y="-4" width="4" height="4" fill="#0A0B0C"/>
+      <rect x="-5" y="-18" width="4" height="15" fill="#1B2A33"/><rect x="1" y="-18" width="4" height="15" fill="#1B2A33"/>
+      <path d="M-9 -16 Q-10 -34 0 -36 Q10 -34 9 -16 Z" fill="#DB352B" stroke="#0A0B0C" stroke-width=".8"/>
+      <path d="M-3 -35 L-6 -17" stroke="#2C8FA8" stroke-width="2"/><circle cx="5" cy="-28" r="2" fill="#F2B705"/>
+      <path d="M-7 -30 Q-14 -28 -16 -26" stroke="#DB352B" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <circle cy="-43" r="6.5" fill="#F2D2B8"/>
+      <path d="M-8 -38 Q-9.5 -53 0 -53 Q9.5 -53 8 -38 L6 -37 L6 -46 Q0 -50 -6 -46 L-6 -37 Z" fill="#0A0B0C"/>
+    </g>
+  </g>`);
+  // immeuble de gauche : boutique et enseigne CALENDAR GAME
+  P.push(`<path d="M-30 360 H300 L330 390 V1000 H-30 Z" fill="#0F1A21"/><path d="M-30 352 H300 L336 388 V396 L300 362 H-30 Z" fill="#E9EEF0"/>`);
+  for (let fy = 430; fy < 760; fy += 82) {
+    P.push(`<rect x="-30" y="${fy+56}" width="360" height="5" fill="#1B2B35"/>`);
+    for (let k = 0; k < 4; k++) {
+      const wx = 10 + k * 74, lit = r() < .55;
+      P.push(`<rect x="${wx}" y="${fy}" width="44" height="40" fill="${lit ? pick(['#F2B705','#FFB27A','#E8622C']) : '#0A1217'}" opacity="${lit ? .85 : 1}" stroke="#1B2B35" stroke-width="3"/>`);
+      if (lit && r() < .5) P.push(`<rect x="${wx}" y="${fy}" width="14" height="40" fill="#DB352B" opacity=".75"/>`);
+      P.push(`<path d="M${wx-4} ${fy-2} h52" stroke="#E9EEF0" stroke-width="3"/>`);
+    }
+  }
+  P.push(`<rect x="30" y="840" width="250" height="125" fill="url(#shopY)"/><g fill="#7A3A14" opacity=".55"><rect x="40" y="870" width="230" height="4"/><rect x="40" y="902" width="230" height="4"/><rect x="40" y="934" width="230" height="4"/></g>`);
+  for (let i = 0; i < 30; i++) P.push(`<rect x="${44 + (i%10)*22}" y="${856 + ((i/10)|0)*32}" width="12" height="13" fill="${pick(['#DB352B','#0E526C','#F6EBDC','#122028'])}"/>`);
+  for (let i = 0; i < 9; i++) P.push(`<path d="M${24 + i*29} 822 h29 l-4 18 h-21 z" fill="${i%2 ? '#F6EBDC' : '#DB352B'}"/>`);
+  P.push(`<g filter="url(#neon)"><rect x="18" y="760" width="292" height="50" rx="4" fill="#160B0D" stroke="#FF4A3D" stroke-width="2.5"/>
+    <text x="164" y="796" text-anchor="middle" font-family="Montserrat, Arial Black, sans-serif" font-weight="900" font-style="italic" font-size="30" fill="#FF6A5C">CALENDAR GAME</text></g>`);
+  P.push(`<g filter="url(#neon)"><rect x="318" y="420" width="26" height="110" fill="#120A0C" stroke="#F2B705" stroke-width="2"/><text font-family="JetBrains Mono, monospace" font-weight="700" font-size="15" fill="#F2B705" text-anchor="middle">${[...'ARCADE'].map((c,i)=>`<tspan x="331" y="${442 + i*16}">${c}</tspan>`).join('')}</text></g>`);
+  // immeuble de droite : panneau de la pilote
+  P.push(`<path d="M1300 300 L1330 270 H1630 V1000 H1300 Z" fill="#0F1A21"/><path d="M1296 304 L1330 262 H1630 V272 H1334 L1300 310 Z" fill="#E9EEF0"/>`);
+  P.push(`<rect x="1440" y="214" width="70" height="48" fill="#15252F"/><ellipse cx="1475" cy="214" rx="35" ry="8" fill="#E9EEF0"/><path d="M1450 262 v12 M1500 262 v12" stroke="#15252F" stroke-width="4"/>`);
+  P.push(`<g filter="url(#neon)"><rect x="1336" y="330" width="244" height="262" fill="#081016" stroke="#3FC3E0" stroke-width="3"/></g>
+    <image href="img/panneau-pilote.webp" x="1346" y="340" width="224" height="195" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="1346" y="540" width="224" height="44" fill="#0E526C"/>
+    <text x="1458" y="560" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="14" fill="#F2B705">PILOTE 01</text>
+    <text x="1458" y="577" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#F6EBDC">25 JOURS · 25 JEUX</text>`);
+  for (let fy = 640; fy < 800; fy += 74) for (let k = 0; k < 4; k++) {
+    const lit = r() < .5;
+    P.push(`<rect x="${1344 + k*66}" y="${fy}" width="40" height="40" fill="${lit ? pick(['#F2B705','#7FC4DA','#FFB27A']) : '#0A1217'}" opacity="${lit ? .8 : 1}" stroke="#1B2B35" stroke-width="3"/>`);
+  }
+  P.push(`<rect x="1330" y="830" width="260" height="130" fill="url(#shopR)"/><g fill="#5A1210" opacity=".5"><rect x="1340" y="862" width="240" height="4"/><rect x="1340" y="898" width="240" height="4"/></g>`);
+  P.push(`<g filter="url(#neon)"><rect x="1264" y="380" width="26" height="80" fill="#120A0C" stroke="#FF4A3D" stroke-width="2"/><text font-family="JetBrains Mono, monospace" font-weight="700" font-size="15" fill="#FF6A5C" text-anchor="middle">${[...'NOËL'].map((c,i)=>`<tspan x="1277" y="${402 + i*16}">${c}</tspan>`).join('')}</text></g>`);
+  svg.innerHTML = P.join('');
+})();
+
+/* ---------- neige ---------- */
+(function snow() {
+  const cv = document.getElementById('snow'); if (!cv) return;
+  const g = cv.getContext('2d');
+  let W = 0, H = 0, flakes = [];
+  function size() {
+    W = cv.width = innerWidth; H = cv.height = innerHeight;
+    const n = Math.min(220, Math.round(W * H / 8000));
+    flakes = Array.from({length: n}, () => ({x: Math.random()*W, y: Math.random()*H, r: .6 + Math.random()*2.2, v: .35 + Math.random()*1.1, d: Math.random()*6.28}));
+    draw();
+  }
+  function draw() {
+    g.clearRect(0, 0, W, H);
+    g.fillStyle = 'rgba(246,235,220,.85)';
+    for (const f of flakes) { g.beginPath(); g.arc(f.x, f.y, f.r, 0, 6.283); g.fill(); }
+  }
+  function step() {
+    for (const f of flakes) {
+      f.y += f.v; f.d += .012; f.x += Math.sin(f.d) * .45;
+      if (f.y > H + 4) { f.y = -4; f.x = Math.random() * W; }
+    }
+    draw();
+    requestAnimationFrame(step);
+  }
+  size();
+  addEventListener('resize', size);
+  if (!reduced) requestAnimationFrame(step);
+})();
+
+/* ---------- bandes défilantes ---------- */
+const b1 = ['25 jeux d\'arcade','la boutique est ouverte','un par jour du 1er au 25 décembre','agenda tactile toute l\'année','météo 7 jours par Wi-Fi','écran 2,8" · 240×320','batterie rechargeable','Calendar Game'];
+const b2 = ['Édition Noël 2026','CG-01','sons 8 bits','Rembobine décembre','by parchap','statut : prêt à jouer'];
+const band = a => { const o = a.map(t => '<span>'+t+'</span>').join(''); return o + o + o + o; };
+$('#band1').innerHTML = band(b1);
+$('#band2').innerHTML = band(b2);
+
+/* ---------- cartouches ---------- */
+const carts = $('#carts');
+carts.innerHTML = GAMES.map(g => {
+  const on = doorOpen(g.d);
+  const stt = on ? '<span class="gs on">▶ Jouable ici</span>' : '<span class="gs">Porte du '+g.d+' déc.</span>';
+  if (g.d === 25) return '<button type="button" class="cart finale rv" data-day="25" data-code="CART-25"><span class="bg" aria-hidden="true">FINALE</span><span class="dn">25</span><span class="fx"><span class="gs">Le 25 décembre · la finale</span><span class="gn">'+g.n+'</span><span class="gp">'+g.p+'</span><span class="gc">Contrôle : '+g.c+'</span></span></button>';
+  return '<button type="button" class="cart rv" data-day="'+g.d+'" data-code="CART-'+pad(g.d)+'" style="--c:'+CSSPAL[(g.d-1)%5]+'"><span class="dn">'+pad(g.d)+'</span><span class="gn">'+g.n+'</span><span class="gp">'+g.p+'</span><span class="gc">'+g.c+'</span>'+stt+'</button>';
+}).join('');
+carts.addEventListener('click', e => {
+  const b = e.target.closest('.cart'); if (!b) return;
+  document.querySelectorAll('.cart').forEach(c => c.removeAttribute('aria-current'));
+  b.setAttribute('aria-current', 'true');
+  Screen.openCart(+b.dataset.day);
+  setChan('jeu');
+  const r = $('#tv-col').getBoundingClientRect();
+  if (r.bottom < 60 || r.top > innerHeight - 60) $('#tv-col').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'center'});
+});
+
+/* ---------- compteurs ---------- */
+function target(now) {
+  const y = now.getFullYear();
+  if (now < new Date(y,11,1)) return {d:new Date(y,11,1), label:'DESTINATION · PORTE 1', eyebrow:'DESTINATION : 1<sup>er</sup> DÉCEMBRE'};
+  if (now < new Date(y,11,25)) return {d:new Date(y,11,25), label:'DESTINATION · NOËL', eyebrow:'DESTINATION : 25 DÉCEMBRE'};
+  return {d:new Date(y+1,11,1), label:'DESTINATION · PORTE 1', eyebrow:'DESTINATION : 1<sup>er</sup> DÉCEMBRE'};
+}
+function tcRow(el, d, plate) {
+  const f = [['MOIS',MO[d.getMonth()]],['JOUR',pad(d.getDate())],['ANNÉE',d.getFullYear()],['HEURE',pad(d.getHours())],['MIN',pad(d.getMinutes())]];
+  el.innerHTML = f.map(([k,v]) => '<span class="f"><small>'+k+'</small><b>'+v+'</b></span>').join('') + '<span class="plate">'+plate+'</span>';
+}
+let lastMin = -1;
+function tick() {
+  const now = new Date(), t = target(now);
+  if (now.getMinutes() !== lastMin) {
+    lastMin = now.getMinutes();
+    tcRow($('#tc-dest'), t.d, t.label);
+    tcRow($('#tc-now'), now, 'PRÉSENT');
+    tcRow($('#tc-last'), new Date(1985,9,26,1,21), 'DERNIER DÉPART');
+    $('#final-eyebrow').innerHTML = t.eyebrow;
+  }
+  const s = Math.max(0, Math.floor((t.d - now)/1000));
+  const c = {d:Math.floor(s/86400), h:Math.floor(s%86400/3600), m:Math.floor(s%3600/60), s:s%60};
+  document.querySelectorAll('#countdown [data-c]').forEach(b => b.textContent = pad(c[b.dataset.c]));
+}
+tick(); setInterval(tick, 1000);
+
+/* ---------- météo de la page ---------- */
+const CITIES = [['PARIS','Paris',19,10],['LYON','Lyon',21,10],['MARSEILLE','Marseille',24,15],['LILLE','Lille',17,9],['BORDEAUX','Bordeaux',22,11],['TOULOUSE','Toulouse',23,12],['BREST','Brest',17,10],['STRASBOURG','Strasbourg',19,8]];
+const WXC = ['sun','partly','cloud','rain','partly','sun','storm'];
+const JOURSf = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+const st = {city:0};
+function forecast(ci) {
+  const [, , mx, mn] = CITIES[ci], d0 = new Date(), out = [];
+  for (let i=0;i<7;i++) {
+    const d = new Date(d0); d.setDate(d0.getDate()+i);
+    const cond = WXC[(i+ci*2)%7], k = ci*1.7;
+    const min = mn + Math.round(2*Math.sin(i*1.1+k+1));
+    const max = mx + Math.round(3*Math.sin(i*1.3+k)) - (cond==='rain'||cond==='storm' ? 2 : 0);
+    out.push({d, cond, min, max:Math.max(max, min+3)});
+  }
+  return out;
+}
+function wxIcon(c, kind, cx, cy, s) {
+  const pix = (fn,col,ox=0,oy=0) => { c.fillStyle = col; for (let j=-7;j<=7;j++) for (let i=-8;i<=8;i++) if (fn(i-ox,j-oy)) c.fillRect(Math.round(cx+i*s-s/2),Math.round(cy+j*s-s/2),s,s); };
+  const disc = r => (x,y) => x*x+y*y <= r*r;
+  const cloud = (x,y) => ((x+3)**2+(y-1)**2<=10) || ((x-1)**2+(y+1)**2<=14) || ((x-4)**2+(y-1.5)**2<=8) || (y>=1 && y<=4 && x>=-6 && x<=7);
+  if (kind==='sun') { pix(disc(3.6),'#F2B705'); pix((x,y) => { const r = Math.hypot(x,y); return r>=5.2 && r<=6.8 && Math.abs(Math.sin(Math.atan2(y,x)*4))<.4; },'#E8622C'); }
+  else if (kind==='partly') { pix(disc(3.4),'#F2B705',-3,-3); pix(cloud,'#F6EBDC',1,1); }
+  else if (kind==='cloud') pix(cloud,'#AFC3CC',0,-1);
+  else if (kind==='rain') { pix(cloud,'#8FA5B0',0,-2); pix((x,y) => y>=4 && y<=6 && x>-6 && x<7 && ((x+y)%3+3)%3===0,'#7FC4DA'); }
+  else { pix(cloud,'#5E7480',0,-2); const B = [[1,3],[0,4],[-1,5],[0,5],[1,5],[0,6],[-1,7]]; pix((x,y) => B.some(([a,b]) => a===x && b===y),'#F2B705'); }
+}
+function renderBoard() {
+  const F = forecast(st.city), c = CITIES[st.city];
+  const lo = Math.min(...F.map(f => f.min)) - 1, hi = Math.max(...F.map(f => f.max)) + 1, pc = v => ((v-lo)/(hi-lo)*100).toFixed(1)+'%';
+  $('#wx-board').innerHTML = '<div class="wx-top"><span>MÉTÉO · '+c[0]+'</span><span>7 JOURS</span></div>' +
+    F.map((f,i) => '<div class="wx-row'+(i?'':' today')+'"><span class="wx-day">'+(i?JOURSf[(f.d.getDay()+6)%7]:'Auj.')+'<small>'+f.d.getDate()+'/'+(f.d.getMonth()+1)+'</small></span><canvas width="40" height="32" data-wx="'+f.cond+'"></canvas><span class="wx-min">'+f.min+'°</span><span class="wx-bar" aria-label="de '+f.min+' à '+f.max+' degrés"><i style="left:'+pc(f.min)+';right:calc(100% - '+pc(f.max)+')"></i></span><span class="wx-max">'+f.max+'°</span></div>').join('') +
+    '<div class="wx-foot"><span><b>● MAJ AUTO PAR WI-FI</b></span><span>SOURCE : MÉTÉO-FRANCE</span></div>';
+  $('#wx-board').querySelectorAll('canvas').forEach(cv2 => wxIcon(cv2.getContext('2d'), cv2.dataset.wx, 20, 16, 2));
+  document.querySelectorAll('.city').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.city === st.city)));
+}
+function paintCarts() {
+  document.querySelectorAll('.cart').forEach(b => {
+    const d = +b.dataset.day;
+    if (d === 25) return;
+    const on = doorOpen(d);
+    const gs = b.querySelector('.gs');
+    if (!gs) return;
+    gs.classList.toggle('on', on);
+    gs.textContent = on ? '▶ Jouable ici' : 'Porte du ' + d + ' déc.';
+  });
+}
+$('#wx-cities').innerHTML = CITIES.map((c,i) => '<button type="button" class="city" data-city="'+i+'" aria-pressed="false">'+c[1]+'</button>').join('');
+$('#wx-cities').addEventListener('click', e => {
+  const b = e.target.closest('.city'); if (!b) return;
+  st.city = +b.dataset.city; renderBoard();
+  Screen.setCity(st.city); Screen.go('meteo');
+  const r = $('#tv-col').getBoundingClientRect();
+  if (r.bottom < 60 || r.top > innerHeight - 60) $('#tv-col').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'center'});
+});
+const CHN = {cal:1, meteo:2, jeu:3, set:4};
+function setChan(k) {
+  document.querySelectorAll('.key').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.go === k)));
+  const n = CHN[k] || 1;
+  $('#chan').textContent = 'CH ' + pad(n);
+  $('#knob').style.setProperty('--rot', (n - 1) * 110 + 'deg');
+}
+Screen.start({
+  cities: CITIES,
+  onCity(i) { st.city = i; renderBoard(); },
+  onMode(mode) {
+    setChan((mode === 'play' || mode === 'gift' || mode === 'locked') ? 'jeu' : (mode === 'note' || mode === 'saver' ? 'cal' : (mode === 'wifi' || mode === 'ptr' || mode === 'clock' ? 'set' : (mode === 'city' ? 'meteo' : mode))));
+  },
+  onClock: paintCarts
+});
+renderBoard();
+paintCarts();
+document.querySelectorAll('.key').forEach(b => b.addEventListener('click', () => Screen.go(b.dataset.go)));
+$('#knob').addEventListener('click', () => {
+  const order = ['cal','meteo','jeu','set'];
+  const cur = document.querySelector('.key[aria-pressed="true"]');
+  const i = Math.max(0, order.indexOf(cur && cur.dataset.go));
+  Screen.go(order[(i + 1) % order.length]);
+});
+
+/* ---------- boutique ----------
+   Pour encaisser : dans Stripe, crée un « lien de paiement » par produit
+   (Catalogue de produits > Liens de paiement) et colle son adresse dans url.
+   Sans adresse, le bouton affiche « Bientôt disponible ». */
+const SHOP = {
+  soft:  {price: 19, url: ''},
+  print: {price: 14, url: ''},
+};
+document.querySelectorAll('[data-buy]').forEach(b => {
+  const p = SHOP[b.dataset.buy];
+  document.querySelector('[data-price="'+b.dataset.buy+'"]').textContent = p.price.toFixed(2).replace('.', ',');
+  if (p.url) b.href = p.url;
+  else { b.setAttribute('aria-disabled', 'true'); b.textContent = 'Bientôt disponible'; }
+});
+
+/* ---------- vidéos pub : lecture quand elles sont à l'écran ----------
+   Le spot TV a le son par défaut. Si le navigateur bloque le son avant
+   toute action du visiteur, la vidéo part muette et le son s'active
+   au premier clic, toucher ou appui de touche sur la page. */
+const vids = [...document.querySelectorAll('video[data-auto]')];
+const want = new Set(vids.filter(v => v.hasAttribute('data-sound-on')));
+const seen = new Set();
+function sndButtons() {
+  document.querySelectorAll('[data-sound]').forEach(x => {
+    const on = want.has(document.getElementById(x.dataset.sound));
+    x.textContent = on ? '♪ SON ON' : '♪ SON OFF';
+    x.setAttribute('aria-pressed', String(on));
+  });
+}
+function start(v) {
+  v.muted = !want.has(v);
+  v.play().catch(() => { v.muted = true; v.play().catch(() => {}); });
+}
+function unlock(e) {
+  if (e.target.closest && e.target.closest('[data-sound]')) return;
+  ['pointerdown', 'keydown', 'touchstart'].forEach(t => removeEventListener(t, unlock, true));
+  want.forEach(v => { v.muted = false; if (seen.has(v)) v.play().catch(() => {}); });
+}
+['pointerdown', 'keydown', 'touchstart'].forEach(t => addEventListener(t, unlock, true));
+if ('IntersectionObserver' in window) {
+  const vio = new IntersectionObserver(es => es.forEach(e => {
+    const v = e.target;
+    if (e.isIntersecting) seen.add(v); else seen.delete(v);
+    if (e.isIntersecting && (!reduced || want.has(v))) start(v);
+    else v.pause();
+  }), {threshold: .35});
+  vids.forEach(v => vio.observe(v));
+}
+document.querySelectorAll('[data-sound]').forEach(b => b.addEventListener('click', () => {
+  const v = document.getElementById(b.dataset.sound);
+  if (want.has(v)) { want.delete(v); v.muted = true; }
+  else { want.clear(); vids.forEach(o => { o.muted = o !== v; }); want.add(v); v.play().catch(() => {}); }
+  sndButtons();
+}));
+sndButtons();
+/* onglet en arrière-plan : on coupe, pour ne jamais entendre le spot en double */
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) vids.forEach(v => v.pause());
+  else vids.forEach(v => { if (seen.has(v) && (!reduced || want.has(v))) start(v); });
+});
+
+/* ---------- apparitions au défilement ---------- */
+const rv = document.querySelectorAll('.rv');
+if ('IntersectionObserver' in window && !reduced) {
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target, sib = el.parentElement ? [...el.parentElement.children].filter(x => x.classList.contains('rv')) : [];
+    el.style.transitionDelay = Math.min(sib.indexOf(el), 8) * 45 + 'ms';
+    el.classList.add('in'); io.unobserve(el);
+  }), {rootMargin:'0px 0px -8% 0px'});
+  rv.forEach(el => io.observe(el));
+} else rv.forEach(el => el.classList.add('in'));
+})();
+</script>
+
+</body></html>
