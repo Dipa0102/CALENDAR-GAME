@@ -1,0 +1,14 @@
+# Fichiers generes
+__pycache__/
+firmware/build/
+*.bin
+
+# Musique convertie par convert_music.py : la licence du morceau interdit souvent de le redistribuer
+*.adp
+*_apercu.wav
+
+# Reglages et notes de la carte : contiennent le mot de passe Wi-Fi
+firmware/backup_carte/
+config.json
+wifi.json
+notes.json
